@@ -1,0 +1,1375 @@
+{
+  "meta": {
+    "title": "PCOS/PMOS Phenotype Grouped Questionnaire & Diagnostic Scoring",
+    "source_document": "PCOS_Phenotype_Grouped_Questionnaire_v3.1.docx",
+    "version": "1.0.0"
+  },
+  "demographics": [
+    {
+      "id": "full_name",
+      "label": "Full Name",
+      "type": "text",
+      "source": "Section 1, Row 1"
+    },
+    {
+      "id": "date_of_birth",
+      "label": "Date of Birth",
+      "type": "date",
+      "source": "Section 1, Row 1"
+    },
+    {
+      "id": "age",
+      "label": "Age",
+      "type": "number",
+      "source": "Section 1, Row 2"
+    },
+    {
+      "id": "sex",
+      "label": "Biological Sex / Gender Identification",
+      "type": "select",
+      "options": [
+        "Female",
+        "Male",
+        "Intersex",
+        "Prefer to self-describe"
+      ],
+      "source": "Section 1, Row 2"
+    },
+    {
+      "id": "occupation",
+      "label": "Current Occupation & Shift Schedule (e.g., night shifts, desk job)",
+      "type": "text",
+      "source": "Section 1, Row 3"
+    },
+    {
+      "id": "relationship_status",
+      "label": "Marital / Relationship Status & Pregnancy Goals",
+      "type": "text",
+      "source": "Section 1, Row 4"
+    },
+    {
+      "id": "ethnicity",
+      "label": "Ethnicity / Geographic Origin",
+      "type": "text",
+      "source": "Section 1, Row 5"
+    },
+    {
+      "id": "living_environment",
+      "label": "Current Living Environment",
+      "type": "select",
+      "options": [
+        "Urban",
+        "Industrial",
+        "Agricultural",
+        "High pollutant exposure",
+        "Rural / low exposure"
+      ],
+      "source": "Section 1, Row 6"
+    },
+    {
+      "id": "pcos_diagnosis_age",
+      "label": "When was PCOS diagnosed (age)?",
+      "type": "number",
+      "source": "Section 1, Row 8"
+    },
+    {
+      "id": "irregular_cycle_flag",
+      "label": "Do you have an irregular menstrual cycle?",
+      "type": "yesno",
+      "source": "Section 1, Row 9"
+    },
+    {
+      "id": "region_preference",
+      "label": "Dietary region preference",
+      "type": "select",
+      "options": [
+        "South Indian",
+        "North Indian"
+      ],
+      "source": "Section 4 header (Targeted South Indian & North Indian Nutrition Guidelines)"
+    },
+    {
+      "id": "diet_type",
+      "label": "Diet type",
+      "type": "select",
+      "options": [
+        "Vegetarian",
+        "Non-Vegetarian",
+        "Vegan"
+      ],
+      "source": "Section 4, Table 9 header (Veg / Non-Veg / Vegan plans)"
+    }
+  ],
+  "primary_goals": [
+    "Regularize menstrual cycles",
+    "Eliminate adult acne",
+    "Reduce hirsutism / excess facial hair",
+    "Reverse insulin resistance",
+    "Lower fasting glucose & HOMA-IR",
+    "Normalize androgen levels (Testosterone / DHEA-S)",
+    "Optimize ovulation & fertility",
+    "Prepare for pregnancy",
+    "Overcome chronic fatigue & brain fog",
+    "Improve sleep quality",
+    "Manage central abdominal weight",
+    "Reduce chronic bloating & gut issues",
+    "Balance mood & lower stress levels",
+    "Boost mitochondrial energy & stamina"
+  ],
+  "phenotypes": {
+    "adrenal": {
+      "label": "Adrenal PCOS (Stress-Driven)",
+      "source": "Section 2, Table 1",
+      "questions": [
+        {
+          "id": "adrenal_vitals",
+          "category": "Clinical Evaluation",
+          "label": "Blood Pressure, Resting Heart Rate & SpO2",
+          "reference": "120/80 mmHg / 60-75 bpm / >95%",
+          "fields": [
+            {
+              "key": "systolic",
+              "label": "Systolic BP",
+              "type": "number",
+              "unit": "mmHg"
+            },
+            {
+              "key": "diastolic",
+              "label": "Diastolic BP",
+              "type": "number",
+              "unit": "mmHg"
+            },
+            {
+              "key": "heart_rate",
+              "label": "Resting Heart Rate",
+              "type": "number",
+              "unit": "bpm"
+            },
+            {
+              "key": "spo2",
+              "label": "SpO2",
+              "type": "number",
+              "unit": "%"
+            }
+          ],
+          "rule": {
+            "op": "any",
+            "rules": [
+              {
+                "op": "outside",
+                "field": "systolic",
+                "range": [
+                  90,
+                  120
+                ]
+              },
+              {
+                "op": "outside",
+                "field": "diastolic",
+                "range": [
+                  60,
+                  80
+                ]
+              },
+              {
+                "op": "outside",
+                "field": "heart_rate",
+                "range": [
+                  60,
+                  75
+                ]
+              },
+              {
+                "op": "lt",
+                "field": "spo2",
+                "value": 95
+              }
+            ]
+          }
+        },
+        {
+          "id": "adrenal_dheas",
+          "category": "Biochemical Evaluation",
+          "label": "DHEA-S (Dehydroepiandrosterone Sulfate)",
+          "reference": "100-250 \u00b5g/dL (isolated >350 = Adrenal)",
+          "fields": [
+            {
+              "key": "dhea_s",
+              "label": "DHEA-S",
+              "type": "number",
+              "unit": "\u00b5g/dL"
+            }
+          ],
+          "rule": {
+            "op": "outside",
+            "field": "dhea_s",
+            "range": [
+              100,
+              250
+            ]
+          }
+        },
+        {
+          "id": "adrenal_cortisol",
+          "category": "Biochemical Evaluation",
+          "label": "Fasting Cortisol (AM) / Salivary Cortisol Curve",
+          "reference": "10-20 \u00b5g/dL (AM)",
+          "fields": [
+            {
+              "key": "cortisol_am",
+              "label": "AM Cortisol",
+              "type": "number",
+              "unit": "\u00b5g/dL"
+            }
+          ],
+          "rule": {
+            "op": "outside",
+            "field": "cortisol_am",
+            "range": [
+              10,
+              20
+            ]
+          }
+        },
+        {
+          "id": "adrenal_stress",
+          "category": "Root Cause Analysis",
+          "label": "Chronic Stress & Anxiety Levels (scale 1-10; burnout history)",
+          "reference": "Score < 4; no history of burnout",
+          "fields": [
+            {
+              "key": "stress_scale",
+              "label": "Stress/anxiety (1-10)",
+              "type": "scale",
+              "min": 1,
+              "max": 10
+            },
+            {
+              "key": "burnout_history",
+              "label": "History of burnout?",
+              "type": "yesno"
+            }
+          ],
+          "rule": {
+            "op": "any",
+            "rules": [
+              {
+                "op": "gte",
+                "field": "stress_scale",
+                "value": 4
+              },
+              {
+                "op": "eq",
+                "field": "burnout_history",
+                "value": "yes"
+              }
+            ]
+          }
+        },
+        {
+          "id": "adrenal_sleep",
+          "category": "Root Cause Analysis",
+          "label": "Sleep Duration & Quality (onset, awakenings, wake time)",
+          "reference": "7-9 hours continuous sleep",
+          "fields": [
+            {
+              "key": "sleep_hours",
+              "label": "Average sleep (hours)",
+              "type": "number",
+              "unit": "hrs",
+              "min": 0,
+              "max": 14,
+              "step": 0.5
+            },
+            {
+              "key": "sleep_poor_quality",
+              "label": "Frequent awakenings / poor quality sleep?",
+              "type": "yesno"
+            }
+          ],
+          "rule": {
+            "op": "any",
+            "rules": [
+              {
+                "op": "outside",
+                "field": "sleep_hours",
+                "range": [
+                  7,
+                  9
+                ]
+              },
+              {
+                "op": "eq",
+                "field": "sleep_poor_quality",
+                "value": "yes"
+              }
+            ]
+          }
+        },
+        {
+          "id": "adrenal_fatigue",
+          "category": "Root Cause Analysis",
+          "label": "Fatigue (feeling worn out easily)",
+          "reference": "Feeling worn out easily",
+          "fields": [
+            {
+              "key": "adrenal_fatigue",
+              "label": "Do you feel worn out easily?",
+              "type": "yesno"
+            }
+          ],
+          "rule": {
+            "op": "eq",
+            "field": "adrenal_fatigue",
+            "value": "yes"
+          }
+        },
+        {
+          "id": "adrenal_worried",
+          "category": "Root Cause Analysis",
+          "label": "Worried (about past, future, health)",
+          "reference": "About past, future, health",
+          "fields": [
+            {
+              "key": "worried",
+              "label": "Do you feel frequently worried?",
+              "type": "yesno"
+            }
+          ],
+          "rule": {
+            "op": "eq",
+            "field": "worried",
+            "value": "yes"
+          }
+        },
+        {
+          "id": "adrenal_concentration",
+          "category": "Root Cause Analysis",
+          "label": "Poor concentration",
+          "reference": "Inability to focus long",
+          "fields": [
+            {
+              "key": "poor_concentration",
+              "label": "Poor concentration / hard to focus?",
+              "type": "yesno"
+            }
+          ],
+          "rule": {
+            "op": "eq",
+            "field": "poor_concentration",
+            "value": "yes"
+          }
+        },
+        {
+          "id": "adrenal_breathing",
+          "category": "Root Cause Analysis",
+          "label": "Shallow breathing",
+          "reference": "Chest breathing > 20 cycles/min",
+          "fields": [
+            {
+              "key": "shallow_breathing",
+              "label": "Shallow / chest breathing?",
+              "type": "yesno"
+            }
+          ],
+          "rule": {
+            "op": "eq",
+            "field": "shallow_breathing",
+            "value": "yes"
+          }
+        },
+        {
+          "id": "adrenal_moods",
+          "category": "Root Cause Analysis",
+          "label": "Frequent mood swings",
+          "reference": "Sudden irritability, anger, or mood drops",
+          "fields": [
+            {
+              "key": "mood_swings",
+              "label": "Frequent mood swings?",
+              "type": "yesno"
+            }
+          ],
+          "rule": {
+            "op": "eq",
+            "field": "mood_swings",
+            "value": "yes"
+          }
+        }
+      ]
+    },
+    "hormonal": {
+      "label": "Hormonal PCOS (Ovarian / Post-Pill)",
+      "source": "Section 2, Table 2",
+      "questions": [
+        {
+          "id": "hormonal_cycle",
+          "category": "Clinical Evaluation",
+          "label": "Menstrual Cycle Length & Regularity",
+          "reference": "Regular 21-35 day ovulatory cycles (abnormal > 45 days)",
+          "fields": [
+            {
+              "key": "cycle_length_days",
+              "label": "Average cycle length (days)",
+              "type": "number",
+              "unit": "days"
+            },
+            {
+              "key": "cycle_absent",
+              "label": "Are periods absent (amenorrhea) for over 45 days?",
+              "type": "yesno"
+            }
+          ],
+          "rule": {
+            "op": "any",
+            "rules": [
+              {
+                "op": "outside",
+                "field": "cycle_length_days",
+                "range": [
+                  21,
+                  35
+                ]
+              },
+              {
+                "op": "eq",
+                "field": "cycle_absent",
+                "value": "yes"
+              }
+            ]
+          }
+        },
+        {
+          "id": "hormonal_hirsutism",
+          "category": "Clinical Evaluation",
+          "label": "Hirsutism Severity (excess facial/body hair on chest, chin, abdomen)",
+          "reference": "Ferriman-Gallwey score < 8 (None)",
+          "fields": [
+            {
+              "key": "hirsutism_severity",
+              "label": "Hirsutism severity",
+              "type": "select",
+              "options": [
+                "None",
+                "Mild",
+                "Severe"
+              ]
+            }
+          ],
+          "rule": {
+            "op": "in",
+            "field": "hirsutism_severity",
+            "values": [
+              "Mild",
+              "Severe"
+            ]
+          }
+        },
+        {
+          "id": "hormonal_alopecia",
+          "category": "Clinical Evaluation",
+          "label": "Pattern Hair Loss / Androgenic Alopecia (scalp thinning)",
+          "reference": "Absence of hair thinning",
+          "fields": [
+            {
+              "key": "alopecia",
+              "label": "Scalp thinning / pattern hair loss?",
+              "type": "yesno"
+            }
+          ],
+          "rule": {
+            "op": "eq",
+            "field": "alopecia",
+            "value": "yes"
+          }
+        },
+        {
+          "id": "hormonal_acne",
+          "category": "Clinical Evaluation",
+          "label": "Acne Characteristics (cystic, jawline, adult-onset)",
+          "reference": "Clear skin / absence of inflammatory acne",
+          "fields": [
+            {
+              "key": "sym_acne",
+              "label": "Cystic / jawline / adult-onset acne?",
+              "type": "yesno"
+            }
+          ],
+          "rule": {
+            "op": "eq",
+            "field": "sym_acne",
+            "value": "yes"
+          },
+          "shared_field": "sym_acne"
+        },
+        {
+          "id": "hormonal_ultrasound",
+          "category": "Clinical Evaluation",
+          "label": "Pelvic Ultrasound Findings (polycystic ovary morphology)",
+          "reference": "< 20 follicles per ovary, volume < 10 ml",
+          "fields": [
+            {
+              "key": "follicle_count",
+              "label": "Follicle count (per ovary)",
+              "type": "number"
+            },
+            {
+              "key": "ovarian_volume_ml",
+              "label": "Ovarian volume",
+              "type": "number",
+              "unit": "ml"
+            }
+          ],
+          "rule": {
+            "op": "any",
+            "rules": [
+              {
+                "op": "gte",
+                "field": "follicle_count",
+                "value": 20
+              },
+              {
+                "op": "gte",
+                "field": "ovarian_volume_ml",
+                "value": 10
+              }
+            ]
+          }
+        },
+        {
+          "id": "hormonal_total_testosterone",
+          "category": "Biochemical Evaluation",
+          "label": "Total Testosterone",
+          "reference": "20-45 ng/dL",
+          "fields": [
+            {
+              "key": "total_testosterone",
+              "label": "Total Testosterone",
+              "type": "number",
+              "unit": "ng/dL"
+            }
+          ],
+          "rule": {
+            "op": "outside",
+            "field": "total_testosterone",
+            "range": [
+              20,
+              45
+            ]
+          }
+        },
+        {
+          "id": "hormonal_free_testosterone",
+          "category": "Biochemical Evaluation",
+          "label": "Free Testosterone",
+          "reference": "0.1-0.85 ng/dL",
+          "fields": [
+            {
+              "key": "free_testosterone",
+              "label": "Free Testosterone",
+              "type": "number",
+              "unit": "ng/dL",
+              "min": 0,
+              "step": 0.01
+            }
+          ],
+          "rule": {
+            "op": "outside",
+            "field": "free_testosterone",
+            "range": [
+              0.1,
+              0.85
+            ]
+          }
+        },
+        {
+          "id": "hormonal_lh_fsh",
+          "category": "Biochemical Evaluation",
+          "label": "LH to FSH Ratio",
+          "reference": "~1:1 (LH:FSH > 2:1 indicates Hormonal)",
+          "fields": [
+            {
+              "key": "lh_fsh_ratio",
+              "label": "LH:FSH ratio",
+              "type": "number",
+              "min": 0,
+              "step": 0.1
+            }
+          ],
+          "rule": {
+            "op": "gte",
+            "field": "lh_fsh_ratio",
+            "value": 2
+          }
+        },
+        {
+          "id": "hormonal_shbg",
+          "category": "Biochemical Evaluation",
+          "label": "Sex Hormone-Binding Globulin (SHBG)",
+          "reference": "40-100 nmol/L",
+          "fields": [
+            {
+              "key": "shbg",
+              "label": "SHBG",
+              "type": "number",
+              "unit": "nmol/L"
+            }
+          ],
+          "rule": {
+            "op": "outside",
+            "field": "shbg",
+            "range": [
+              40,
+              100
+            ]
+          }
+        },
+        {
+          "id": "hormonal_post_pill",
+          "category": "Root Cause Analysis",
+          "label": "History of Post-Pill Amenorrhea or Synthetic Hormone Use",
+          "reference": "Natural cycle resumption 3-6 months post-pill",
+          "fields": [
+            {
+              "key": "post_pill_amenorrhea",
+              "label": "History of post-pill amenorrhea / synthetic hormone use?",
+              "type": "yesno"
+            }
+          ],
+          "rule": {
+            "op": "eq",
+            "field": "post_pill_amenorrhea",
+            "value": "yes"
+          }
+        }
+      ]
+    },
+    "inflammatory": {
+      "label": "Inflammatory PCOS (Immune / Gut-Driven)",
+      "source": "Section 2, Table 3",
+      "questions": [
+        {
+          "id": "inflammatory_acne",
+          "category": "Clinical Evaluation",
+          "label": "Acne Characteristics (cystic, jawline, adult-onset)",
+          "reference": "Clear skin / absence of inflammatory acne",
+          "fields": [
+            {
+              "key": "sym_acne",
+              "label": "Cystic / jawline / adult-onset acne?",
+              "type": "yesno"
+            }
+          ],
+          "rule": {
+            "op": "eq",
+            "field": "sym_acne",
+            "value": "yes"
+          },
+          "shared_field": "sym_acne"
+        },
+        {
+          "id": "inflammatory_joint_pain",
+          "category": "Clinical Evaluation",
+          "label": "Joint Pain, Unexplained Swelling, or Food Sensitivities",
+          "reference": "Absence of chronic inflammatory symptoms",
+          "fields": [
+            {
+              "key": "joint_pain",
+              "label": "Joint pain, unexplained swelling, or food sensitivities?",
+              "type": "yesno"
+            }
+          ],
+          "rule": {
+            "op": "eq",
+            "field": "joint_pain",
+            "value": "yes"
+          }
+        },
+        {
+          "id": "inflammatory_hscrp",
+          "category": "Biochemical Evaluation",
+          "label": "High-Sensitivity C-Reactive Protein (hs-CRP)",
+          "reference": "< 1.0 mg/L",
+          "fields": [
+            {
+              "key": "hs_crp",
+              "label": "hs-CRP",
+              "type": "number",
+              "unit": "mg/L",
+              "min": 0,
+              "step": 0.1
+            }
+          ],
+          "rule": {
+            "op": "gte",
+            "field": "hs_crp",
+            "value": 1.0
+          }
+        },
+        {
+          "id": "inflammatory_thyroid",
+          "category": "Biochemical Evaluation",
+          "label": "Thyroid Panel (TSH, Free T3, Free T4, TPO Antibodies)",
+          "reference": "TSH 1.0-2.0 mIU/L; TPO Ab negative",
+          "fields": [
+            {
+              "key": "tsh",
+              "label": "TSH",
+              "type": "number",
+              "unit": "mIU/L",
+              "min": 0,
+              "step": 0.1
+            },
+            {
+              "key": "tpo_ab_positive",
+              "label": "TPO antibodies positive?",
+              "type": "yesno"
+            }
+          ],
+          "rule": {
+            "op": "any",
+            "rules": [
+              {
+                "op": "outside",
+                "field": "tsh",
+                "range": [
+                  1.0,
+                  2.0
+                ]
+              },
+              {
+                "op": "eq",
+                "field": "tpo_ab_positive",
+                "value": "yes"
+              }
+            ]
+          }
+        },
+        {
+          "id": "inflammatory_vitd_zinc",
+          "category": "Biochemical Evaluation",
+          "label": "Vitamin D3 (25-OH) & Serum Zinc",
+          "reference": "> 40 ng/mL / 90-120 \u00b5g/dL",
+          "fields": [
+            {
+              "key": "vitamin_d3",
+              "label": "Vitamin D3 (25-OH)",
+              "type": "number",
+              "unit": "ng/mL"
+            },
+            {
+              "key": "serum_zinc",
+              "label": "Serum Zinc",
+              "type": "number",
+              "unit": "\u00b5g/dL"
+            }
+          ],
+          "rule": {
+            "op": "any",
+            "rules": [
+              {
+                "op": "lt",
+                "field": "vitamin_d3",
+                "value": 40
+              },
+              {
+                "op": "outside",
+                "field": "serum_zinc",
+                "range": [
+                  90,
+                  120
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "inflammatory_edc",
+          "category": "Root Cause Analysis",
+          "label": "Daily EDC Exposure (plastics, pesticides, non-stick, cosmetics)",
+          "reference": "Low environmental toxin exposure",
+          "fields": [
+            {
+              "key": "edc_exposure",
+              "label": "EDC exposure level",
+              "type": "select",
+              "options": [
+                "Low",
+                "Moderate",
+                "High"
+              ]
+            }
+          ],
+          "rule": {
+            "op": "in",
+            "field": "edc_exposure",
+            "values": [
+              "Moderate",
+              "High"
+            ]
+          }
+        },
+        {
+          "id": "inflammatory_heavy_metal",
+          "category": "Root Cause Analysis",
+          "label": "Heavy Metal or Occupational Chemical Exposures",
+          "reference": "No significant chemical exposure",
+          "fields": [
+            {
+              "key": "heavy_metal_exposure",
+              "label": "Heavy metal / occupational chemical exposure?",
+              "type": "yesno"
+            }
+          ],
+          "rule": {
+            "op": "eq",
+            "field": "heavy_metal_exposure",
+            "value": "yes"
+          }
+        },
+        {
+          "id": "inflammatory_gut",
+          "category": "Root Cause Analysis",
+          "label": "Gut Health Status (bloating, IBS, constipation, dysbiosis)",
+          "reference": "Normal daily bowel movements, no bloating",
+          "fields": [
+            {
+              "key": "gut_health_issue",
+              "label": "Bloating, IBS, constipation or dysbiosis?",
+              "type": "yesno"
+            },
+            {
+              "key": "gut_dysbiosis_severe",
+              "label": "If yes - is it severe / frequent (severe IBS or gut dysbiosis)?",
+              "type": "yesno"
+            }
+          ],
+          "rule": {
+            "op": "eq",
+            "field": "gut_health_issue",
+            "value": "yes"
+          }
+        },
+        {
+          "id": "inflammatory_autoimmune",
+          "category": "Root Cause Analysis",
+          "label": "Chronic Low-Grade Infections or Autoimmune History",
+          "reference": "Absence of chronic infection/autoimmunity",
+          "fields": [
+            {
+              "key": "autoimmune_history",
+              "label": "Chronic low-grade infections or autoimmune history?",
+              "type": "yesno"
+            }
+          ],
+          "rule": {
+            "op": "eq",
+            "field": "autoimmune_history",
+            "value": "yes"
+          }
+        },
+        {
+          "id": "inflammatory_sunlight",
+          "category": "Root Cause Analysis",
+          "label": "Sunlight Exposure (10am-4pm, >20 min/day) & deficiency symptoms",
+          "reference": "No bone/joint pain, muscle weakness, or slow wound healing",
+          "fields": [
+            {
+              "key": "low_sun_exposure",
+              "label": "Less than 20 min/day direct sunlight (10am-4pm)?",
+              "type": "yesno"
+            },
+            {
+              "key": "vitd_deficiency_symptoms",
+              "label": "Bone/joint pain, muscle weakness, or slow wound healing?",
+              "type": "yesno"
+            }
+          ],
+          "rule": {
+            "op": "any",
+            "rules": [
+              {
+                "op": "eq",
+                "field": "low_sun_exposure",
+                "value": "yes"
+              },
+              {
+                "op": "eq",
+                "field": "vitd_deficiency_symptoms",
+                "value": "yes"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "metabolic": {
+      "label": "Metabolic PCOS (Insulin-Resistant)",
+      "source": "Section 2, Table 4",
+      "questions": [
+        {
+          "id": "metabolic_bmi_whr",
+          "category": "Clinical Evaluation",
+          "label": "Height, Weight, BMI, and Waist-to-Hip Ratio (WHR)",
+          "reference": "BMI 18.5-24.9 / WHR < 0.80",
+          "fields": [
+            {
+              "key": "height_cm",
+              "label": "Height",
+              "type": "number",
+              "unit": "cm"
+            },
+            {
+              "key": "weight_kg",
+              "label": "Weight",
+              "type": "number",
+              "unit": "kg"
+            },
+            {
+              "key": "waist_cm",
+              "label": "Waist circumference",
+              "type": "number",
+              "unit": "cm"
+            },
+            {
+              "key": "hip_cm",
+              "label": "Hip circumference",
+              "type": "number",
+              "unit": "cm"
+            }
+          ],
+          "computed": {
+            "bmi": "weight_kg / ((height_cm/100) ** 2)",
+            "whr": "waist_cm / hip_cm"
+          },
+          "rule": {
+            "op": "any",
+            "rules": [
+              {
+                "op": "outside",
+                "field": "bmi",
+                "range": [
+                  18.5,
+                  24.9
+                ]
+              },
+              {
+                "op": "gte",
+                "field": "whr",
+                "value": 0.8
+              }
+            ]
+          }
+        },
+        {
+          "id": "metabolic_acanthosis",
+          "category": "Clinical Evaluation",
+          "label": "Presence of Acanthosis Nigricans (darkened skin patches)",
+          "reference": "Absence of skin hyperpigmentation",
+          "fields": [
+            {
+              "key": "acanthosis_nigricans",
+              "label": "Acanthosis nigricans (darkened skin patches)?",
+              "type": "yesno"
+            }
+          ],
+          "rule": {
+            "op": "eq",
+            "field": "acanthosis_nigricans",
+            "value": "yes"
+          }
+        },
+        {
+          "id": "metabolic_skin_tags",
+          "category": "Clinical Evaluation",
+          "label": "History of Skin Tags",
+          "reference": "Absence of skin tags",
+          "fields": [
+            {
+              "key": "skin_tags",
+              "label": "History of skin tags?",
+              "type": "yesno"
+            }
+          ],
+          "rule": {
+            "op": "eq",
+            "field": "skin_tags",
+            "value": "yes"
+          }
+        },
+        {
+          "id": "metabolic_postprandial",
+          "category": "Clinical Evaluation",
+          "label": "Recurrent Fatigue, Brain Fog, or Energy Slumps After Meals",
+          "reference": "Sustained post-prandial energy",
+          "fields": [
+            {
+              "key": "postprandial_slump",
+              "label": "Fatigue / brain fog / energy slumps after meals?",
+              "type": "yesno"
+            }
+          ],
+          "rule": {
+            "op": "eq",
+            "field": "postprandial_slump",
+            "value": "yes"
+          }
+        },
+        {
+          "id": "metabolic_glucose_insulin",
+          "category": "Biochemical Evaluation",
+          "label": "Fasting Glucose & Fasting Insulin",
+          "reference": "< 95 mg/dL / < 5 \u00b5IU/mL",
+          "fields": [
+            {
+              "key": "fasting_glucose",
+              "label": "Fasting Glucose",
+              "type": "number",
+              "unit": "mg/dL"
+            },
+            {
+              "key": "fasting_insulin",
+              "label": "Fasting Insulin",
+              "type": "number",
+              "unit": "\u00b5IU/mL",
+              "min": 0,
+              "step": 0.1
+            }
+          ],
+          "rule": {
+            "op": "any",
+            "rules": [
+              {
+                "op": "gte",
+                "field": "fasting_glucose",
+                "value": 95
+              },
+              {
+                "op": "gte",
+                "field": "fasting_insulin",
+                "value": 5
+              }
+            ]
+          }
+        },
+        {
+          "id": "metabolic_hba1c",
+          "category": "Biochemical Evaluation",
+          "label": "HbA1c (Glycated Hemoglobin)",
+          "reference": "< 5.4%",
+          "fields": [
+            {
+              "key": "hba1c",
+              "label": "HbA1c",
+              "type": "number",
+              "unit": "%",
+              "min": 0,
+              "step": 0.1
+            }
+          ],
+          "rule": {
+            "op": "gte",
+            "field": "hba1c",
+            "value": 5.4
+          }
+        },
+        {
+          "id": "metabolic_homair",
+          "category": "Biochemical Evaluation",
+          "label": "HOMA-IR Index",
+          "reference": "< 1.5 ideal (> 2.0 = Metabolic)",
+          "fields": [
+            {
+              "key": "homa_ir",
+              "label": "HOMA-IR",
+              "type": "number",
+              "min": 0,
+              "step": 0.1
+            }
+          ],
+          "rule": {
+            "op": "gte",
+            "field": "homa_ir",
+            "value": 1.5
+          }
+        },
+        {
+          "id": "metabolic_lipids",
+          "category": "Biochemical Evaluation",
+          "label": "Fasting Lipid Profile (Triglycerides, HDL, LDL)",
+          "reference": "Triglycerides:HDL ratio < 2.0",
+          "fields": [
+            {
+              "key": "triglycerides",
+              "label": "Triglycerides",
+              "type": "number",
+              "unit": "mg/dL"
+            },
+            {
+              "key": "hdl",
+              "label": "HDL",
+              "type": "number",
+              "unit": "mg/dL"
+            }
+          ],
+          "computed": {
+            "tg_hdl_ratio": "triglycerides / hdl"
+          },
+          "rule": {
+            "op": "gte",
+            "field": "tg_hdl_ratio",
+            "value": 2.0
+          }
+        },
+        {
+          "id": "metabolic_activity",
+          "category": "Root Cause Analysis",
+          "label": "Daily Physical Activity Level",
+          "reference": "Regular moderate-to-vigorous activity",
+          "fields": [
+            {
+              "key": "sedentary",
+              "label": "Mostly sedentary / below regular moderate-to-vigorous activity?",
+              "type": "yesno"
+            }
+          ],
+          "rule": {
+            "op": "eq",
+            "field": "sedentary",
+            "value": "yes"
+          }
+        },
+        {
+          "id": "metabolic_ultraprocessed",
+          "category": "Root Cause Analysis",
+          "label": "Ultra-Processed Food & Refined Sugar Intake",
+          "reference": "Whole-food diet; < 2 processed meals/week",
+          "fields": [
+            {
+              "key": "ultraprocessed_food",
+              "label": "2 or more ultra-processed / high-sugar meals per week?",
+              "type": "yesno"
+            }
+          ],
+          "rule": {
+            "op": "eq",
+            "field": "ultraprocessed_food",
+            "value": "yes"
+          }
+        }
+      ]
+    }
+  },
+  "mitochondrial_axis": {
+    "label": "General Mitochondrial Dysfunction & Hypoxia Triggers",
+    "source": "Section 2, Table 5 (screening axis, scored out of 4, not one of the 4 main phenotypes)",
+    "questions": [
+      {
+        "id": "mito_depression",
+        "category": "Root Cause Analysis",
+        "label": "History of Depression or Chronic Low Energy",
+        "reference": "Indicates cellular ATP/mitochondrial exhaustion",
+        "fields": [
+          {
+            "key": "mito_depression",
+            "label": "History of depression or chronic low energy?",
+            "type": "yesno"
+          }
+        ],
+        "rule": {
+          "op": "eq",
+          "field": "mito_depression",
+          "value": "yes"
+        }
+      },
+      {
+        "id": "mito_hypoxia",
+        "category": "Root Cause Analysis",
+        "label": "Hypoxia Indicators (shallow breathing, sleep apnea, anemia)",
+        "reference": "Cellular hypoxia impairs ovarian follicle maturation",
+        "fields": [
+          {
+            "key": "mito_hypoxia",
+            "label": "Shallow breathing, sleep apnea, or anemia?",
+            "type": "yesno"
+          }
+        ],
+        "rule": {
+          "op": "eq",
+          "field": "mito_hypoxia",
+          "value": "yes"
+        }
+      },
+      {
+        "id": "mito_pem",
+        "category": "Root Cause Analysis",
+        "label": "Post-Exertional Malaise (feeling crashed after exercise)",
+        "reference": "Mitochondrial transport chain impairment",
+        "fields": [
+          {
+            "key": "mito_pem",
+            "label": "Feeling crashed / wiped out after exercise?",
+            "type": "yesno"
+          }
+        ],
+        "rule": {
+          "op": "eq",
+          "field": "mito_pem",
+          "value": "yes"
+        }
+      },
+      {
+        "id": "mito_detraining",
+        "category": "Root Cause Analysis",
+        "label": "Sudden Detraining / Cessation of Competitive Sports",
+        "reference": "Consistent exercise baseline",
+        "fields": [
+          {
+            "key": "mito_detraining",
+            "label": "Sudden stop of a previously active/competitive sport routine?",
+            "type": "yesno"
+          }
+        ],
+        "rule": {
+          "op": "eq",
+          "field": "mito_detraining",
+          "value": "yes"
+        }
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "id": "metabolic_override",
+      "phenotype": "metabolic",
+      "label": "Fasting Insulin > 10 \u00b5IU/mL or HOMA-IR > 2.0",
+      "reference": "Confirms Metabolic Phenotype",
+      "source": "Section 3, Key Biomarker Priority Overrules, bullet 1",
+      "rule": {
+        "op": "any",
+        "rules": [
+          {
+            "op": "gt",
+            "field": "fasting_insulin",
+            "value": 10
+          },
+          {
+            "op": "gt",
+            "field": "homa_ir",
+            "value": 2.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "adrenal_override",
+      "phenotype": "adrenal",
+      "label": "Isolated DHEA-S > 350 \u00b5g/dL with normal insulin",
+      "reference": "Confirms Adrenal Phenotype",
+      "source": "Section 3, Key Biomarker Priority Overrules, bullet 2",
+      "rule": {
+        "op": "all",
+        "rules": [
+          {
+            "op": "gt",
+            "field": "dhea_s",
+            "value": 350
+          },
+          {
+            "op": "not",
+            "rule": {
+              "op": "any",
+              "rules": [
+                {
+                  "op": "gt",
+                  "field": "fasting_insulin",
+                  "value": 10
+                },
+                {
+                  "op": "gt",
+                  "field": "homa_ir",
+                  "value": 2.0
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "hormonal_override",
+      "phenotype": "hormonal",
+      "label": "LH:FSH > 2:1 or post-pill amenorrhea",
+      "reference": "Confirms Hormonal Phenotype",
+      "source": "Section 3, Key Biomarker Priority Overrules, bullet 3",
+      "rule": {
+        "op": "any",
+        "rules": [
+          {
+            "op": "gt",
+            "field": "lh_fsh_ratio",
+            "value": 2
+          },
+          {
+            "op": "eq",
+            "field": "post_pill_amenorrhea",
+            "value": "yes"
+          }
+        ]
+      }
+    },
+    {
+      "id": "inflammatory_override",
+      "phenotype": "inflammatory",
+      "label": "hs-CRP > 1.5 mg/L or severe IBS/gut dysbiosis",
+      "reference": "Confirms Inflammatory Phenotype",
+      "source": "Section 3, Key Biomarker Priority Overrules, bullet 4",
+      "rule": {
+        "op": "any",
+        "rules": [
+          {
+            "op": "gt",
+            "field": "hs_crp",
+            "value": 1.5
+          },
+          {
+            "op": "eq",
+            "field": "gut_dysbiosis_severe",
+            "value": "yes"
+          }
+        ]
+      }
+    }
+  ],
+  "severity_bands": {
+    "source": "Section 3, Clinical Severity Grading",
+    "bands": [
+      {
+        "min": 0,
+        "max": 0,
+        "label": "None / Minimal"
+      },
+      {
+        "min": 1,
+        "max": 2,
+        "label": "Mild Driver"
+      },
+      {
+        "min": 3,
+        "max": 4,
+        "label": "Moderate Driver"
+      },
+      {
+        "min": 5,
+        "max": 10,
+        "label": "Severe Driver / Primary Target"
+      }
+    ]
+  },
+  "classification_rules": {
+    "primary": "Section 3: phenotype with the highest percentage of positive ticks (out of 10) is the primary/dominant driver.",
+    "mixed": "Section 3: if two phenotypes tie for the highest tick count, classify as Mixed/Combination Phenotype requiring a dual-targeted protocol.",
+    "override_precedence": "Section 3: a triggered biomarker override confirms its phenotype and can flip the tally-based classification. If overrides for two different phenotypes trigger simultaneously, classify as Mixed/Combination.",
+    "biomarker_support_note": "Section 3: '3+ positive findings in key biomarkers' for a phenotype is surfaced as supporting evidence alongside the tally-based result."
+  }
+}
