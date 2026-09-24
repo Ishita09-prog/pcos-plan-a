@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from . import models  # noqa: F401  (ensures tables are created on import)
-from .routers import submissions
+from .routers import feedback, registration, submissions
 
 app = FastAPI(
     title="PCOS Phenotype Classification API (Plan A)",
@@ -22,6 +22,8 @@ app.add_middleware(
 )
 
 app.include_router(submissions.router)
+app.include_router(registration.router)
+app.include_router(feedback.router)
 
 
 @app.get("/api/health")

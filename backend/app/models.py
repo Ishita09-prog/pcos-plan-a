@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import JSON, Column, DateTime, String
+from sqlalchemy import JSON, Column, Date, DateTime, Integer, String
 from sqlalchemy.dialects.postgresql import UUID
 
 from .database import Base, engine
@@ -35,6 +35,43 @@ class Submission(Base):
     classification = Column(JSON, nullable=False, default=dict)
     recommendation = Column(JSON, nullable=False, default=dict)
     questionnaire_version = Column(String, nullable=False, default="1.0.0")
+
+
+class Registration(Base):
+    """
+    Step 0 (Registration page) record. Ishi's explicit call: this is a real
+    backend table now, not browser-only sessionStorage -- but it still never
+    leaves this project's own database. No row here is ever sent to OpenAI,
+    any other AI provider, or any third-party service; the report-upload
+    fields it stores are the *already-extracted* numbers produced entirely
+    client-side (see frontend/src/lib/reportExtractor.js) -- the original
+    PDF/image file itself is never uploaded or stored anywhere.
+    """
+    __tablename__ = "registrations"
+
+    id = _uuid_column()
+    created_at = Column(DateTime, default=datetime.utcnow)
+    full_name = Column(String, nullable=False)
+    email = Column(String, nullable=False)
+    dob = Column(Date, nullable=True)
+    age = Column(Integer, nullable=True)
+    demographics = Column(JSON, nullable=False, default=dict)
+    region_preference = Column(String, nullable=True)
+    diet_type = Column(String, nullable=True)
+    extracted_report = Column(JSON, nullable=True)
+
+
+class Feedback(Base):
+    """Feedback form (insights-doc gap): general feedback about the tool
+    itself, not clinical data -- kept in this project's own database only."""
+    __tablename__ = "feedback"
+
+    id = _uuid_column()
+    created_at = Column(DateTime, default=datetime.utcnow)
+    rating = Column(Integer, nullable=True)
+    comments = Column(String, nullable=False)
+    context = Column(String, nullable=True)
+    contact_email = Column(String, nullable=True)
 
 
 Base.metadata.create_all(bind=engine)
