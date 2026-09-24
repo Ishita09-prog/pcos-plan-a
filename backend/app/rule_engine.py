@@ -134,7 +134,7 @@ def score_phenotypes(answers: Dict[str, Any]) -> Dict[str, Any]:
             if positive and q["category"] == "Biochemical Evaluation":
                 biochemical_positive += 1
             ticks.append({"id": q["id"], "label": q["label"], "category": q["category"],
-                          "reference": q["reference"], "positive": positive})
+                          "reference": q.get("reference", ""), "positive": positive})
         total = len(phenotype["questions"])
         positive_count = sum(1 for t in ticks if t["positive"])
         results[pid] = {
@@ -149,7 +149,7 @@ def score_phenotypes(answers: Dict[str, Any]) -> Dict[str, Any]:
         }
 
     mito = QUESTIONNAIRE["mitochondrial_axis"]
-    mito_ticks = [{"id": q["id"], "label": q["label"], "reference": q["reference"],
+    mito_ticks = [{"id": q["id"], "label": q["label"], "reference": q.get("reference", ""),
                    "positive": evaluate_rule(q["rule"], values)} for q in mito["questions"]]
     mito_positive = sum(1 for t in mito_ticks if t["positive"])
     results["mitochondrial"] = {
@@ -237,38 +237,39 @@ def classify(scores: Dict[str, Any], overrides_triggered: List[Dict[str, Any]]) 
 
 
 def check_rotterdam_and_exclusions(answers: Dict[str, Any]) -> Dict[str, Any]:
+    """First-line testing gate (Step 0, added per mentor feedback): before the
+    4-phenotype tally runs at all, check the standard Rotterdam criteria (2 of
+    3: irregular cycle, high testosterone, polycystic ovaries on ultrasound).
+    This is an exclusion gate, not a phenotype -- someone who doesn't meet it
+    never gets a confident phenotype classification ("so the model won't be
+    having delusions", per feedback)."""
     if answers.get("exclusion_other_disorders") == "yes":
-        return {"status": "excluded", "reason": "Excluded due to other suspected thyroid or pituitary disorders."}
-    
+        return {"status": "excluded", "reason": "Excluded due to other suspected thyroid or pituitary disorders (CAH, androgen-secreting tumor, Cushing's) that can mimic PCOS."}
+
     rotterdam_count = 0
     if answers.get("irregular_cycle") == "yes":
         rotterdam_count += 1
-    
+
     total_test = answers.get("total_testosterone")
-    has_high_test = answers.get("high_testosterone_symptoms") == "yes" or (total_test is not None and float(total_test) > 45)
+    try:
+        total_test_val = float(total_test) if total_test not in (None, "") else None
+    except (TypeError, ValueError):
+        total_test_val = None
+    has_high_test = answers.get("high_testosterone_symptoms") == "yes" or (total_test_val is not None and total_test_val > 45)
     if has_high_test:
         rotterdam_count += 1
-        
+
     if answers.get("polycystic_ovaries_usg") == "yes":
         rotterdam_count += 1
-        
+
     if rotterdam_count < 2:
         return {"status": "not_pcos", "reason": "Does not meet Rotterdam Criteria (requires 2 of 3: irregular cycles, high testosterone, polycystic ovaries)."}
-        
+
     return {"status": "pcos", "reason": "Meets Rotterdam Criteria for PCOS diagnosis."}
+
 
 def run_pipeline(answers: Dict[str, Any]) -> Dict[str, Any]:
     scores, enriched_values = score_phenotypes(answers)
-    
-    # Calculate bmi_calculated explicitly since safe_eval only handles simple binops
-    weight = enriched_values.get("weight_kg")
-    height = enriched_values.get("height_cm")
-    if weight is not None and height is not None:
-        try:
-            enriched_values["bmi_calculated"] = float(weight) / (float(height) / 100) ** 2
-        except ZeroDivisionError:
-            pass
-
     rotterdam_result = check_rotterdam_and_exclusions(enriched_values)
     if rotterdam_result["status"] != "pcos":
         classification = {
