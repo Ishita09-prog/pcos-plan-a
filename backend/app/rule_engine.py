@@ -236,8 +236,52 @@ def classify(scores: Dict[str, Any], overrides_triggered: List[Dict[str, Any]]) 
     }
 
 
+def check_rotterdam_and_exclusions(answers: Dict[str, Any]) -> Dict[str, Any]:
+    if answers.get("exclusion_other_disorders") == "yes":
+        return {"status": "excluded", "reason": "Excluded due to other suspected thyroid or pituitary disorders."}
+    
+    rotterdam_count = 0
+    if answers.get("irregular_cycle") == "yes":
+        rotterdam_count += 1
+    
+    total_test = answers.get("total_testosterone")
+    has_high_test = answers.get("high_testosterone_symptoms") == "yes" or (total_test is not None and float(total_test) > 45)
+    if has_high_test:
+        rotterdam_count += 1
+        
+    if answers.get("polycystic_ovaries_usg") == "yes":
+        rotterdam_count += 1
+        
+    if rotterdam_count < 2:
+        return {"status": "not_pcos", "reason": "Does not meet Rotterdam Criteria (requires 2 of 3: irregular cycles, high testosterone, polycystic ovaries)."}
+        
+    return {"status": "pcos", "reason": "Meets Rotterdam Criteria for PCOS diagnosis."}
+
 def run_pipeline(answers: Dict[str, Any]) -> Dict[str, Any]:
     scores, enriched_values = score_phenotypes(answers)
+    
+    # Calculate bmi_calculated explicitly since safe_eval only handles simple binops
+    weight = enriched_values.get("weight_kg")
+    height = enriched_values.get("height_cm")
+    if weight is not None and height is not None:
+        try:
+            enriched_values["bmi_calculated"] = float(weight) / (float(height) / 100) ** 2
+        except ZeroDivisionError:
+            pass
+
+    rotterdam_result = check_rotterdam_and_exclusions(enriched_values)
+    if rotterdam_result["status"] != "pcos":
+        classification = {
+            "classification": "Excluded" if rotterdam_result["status"] == "excluded" else "Inconclusive — Does not meet Rotterdam Criteria",
+            "primary_phenotype": None,
+            "phenotypes_involved": [],
+            "reason": rotterdam_result["reason"],
+            "tally_leaders": [],
+            "overrides_triggered": [],
+            "biomarker_supported_phenotypes": []
+        }
+        return {"scores": scores, "classification": classification, "computed_values": enriched_values}
+        
     overrides_triggered = evaluate_overrides(enriched_values)
     classification = classify(scores, overrides_triggered)
     return {"scores": scores, "classification": classification, "computed_values": enriched_values}

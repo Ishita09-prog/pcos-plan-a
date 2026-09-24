@@ -145,6 +145,12 @@ export default function QuestionCard({ question, index, answers, onChange, carri
         {question.reference && (
           <div className="mb-4 field-ref">Reference: {question.reference}</div>
         )}
+        
+        {question.description && (
+          <div className="mb-4 text-xs text-slate-400 bg-white/5 p-2 rounded-lg">
+            {question.description}
+          </div>
+        )}
 
         {carriedOver ? (
           <div className="rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-400">

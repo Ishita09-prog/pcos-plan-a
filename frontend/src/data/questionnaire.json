@@ -6,36 +6,6 @@
   },
   "demographics": [
     {
-      "id": "full_name",
-      "label": "Full Name",
-      "type": "text",
-      "source": "Section 1, Row 1"
-    },
-    {
-      "id": "date_of_birth",
-      "label": "Date of Birth",
-      "type": "date",
-      "source": "Section 1, Row 1"
-    },
-    {
-      "id": "age",
-      "label": "Age",
-      "type": "number",
-      "source": "Section 1, Row 2"
-    },
-    {
-      "id": "sex",
-      "label": "Biological Sex / Gender Identification",
-      "type": "select",
-      "options": [
-        "Female",
-        "Male",
-        "Intersex",
-        "Prefer to self-describe"
-      ],
-      "source": "Section 1, Row 2"
-    },
-    {
       "id": "occupation",
       "label": "Current Occupation & Shift Schedule (e.g., night shifts, desk job)",
       "type": "text",
@@ -234,20 +204,29 @@
         {
           "id": "adrenal_stress",
           "category": "Root Cause Analysis",
-          "label": "Chronic Stress & Anxiety Levels (scale 1-10; burnout history)",
+          "label": "Perceived Stress & Anxiety (PSQ & PHQ-2)",
           "reference": "Score < 4; no history of burnout",
           "fields": [
             {
-              "key": "stress_scale",
-              "label": "Stress/anxiety (1-10)",
+              "key": "stress_psq",
+              "label": "Perceived Stress Questionnaire (Score 0-10)",
               "type": "scale",
-              "min": 1,
+              "min": 0,
               "max": 10
             },
             {
-              "key": "burnout_history",
-              "label": "History of burnout?",
-              "type": "yesno"
+              "key": "anxiety_phq2",
+              "label": "Over the last 2 weeks, how often have you been bothered by feeling nervous, anxious or on edge? (0-3)",
+              "type": "number",
+              "min": 0,
+              "max": 3
+            },
+            {
+              "key": "anxiety_phq2_2",
+              "label": "Over the last 2 weeks, how often have you been bothered by not being able to stop or control worrying? (0-3)",
+              "type": "number",
+              "min": 0,
+              "max": 3
             }
           ],
           "rule": {
@@ -255,16 +234,22 @@
             "rules": [
               {
                 "op": "gte",
-                "field": "stress_scale",
-                "value": 4
+                "field": "stress_psq",
+                "value": 7
               },
               {
-                "op": "eq",
-                "field": "burnout_history",
-                "value": "yes"
+                "op": "gte",
+                "field": "anxiety_phq2",
+                "value": 2
+              },
+              {
+                "op": "gte",
+                "field": "anxiety_phq2_2",
+                "value": 2
               }
             ]
-          }
+          },
+          "description": "Stress scaling: 0 means no stress, 10 means highest stress. PHQ-2 is a 2-item anxiety screener."
         },
         {
           "id": "adrenal_sleep",
@@ -908,6 +893,64 @@
       "source": "Section 2, Table 4",
       "questions": [
         {
+          "id": "metabolic_bmi",
+          "category": "Clinical Evaluation",
+          "label": "Body Mass Index (BMI)",
+          "reference": "BMI 18.5 - 24.9",
+          "fields": [
+            {
+              "key": "height_cm",
+              "label": "Height (cm)",
+              "type": "number"
+            },
+            {
+              "key": "weight_kg",
+              "label": "Weight (kg)",
+              "type": "number"
+            }
+          ],
+          "rule": {
+            "op": "gte",
+            "field": "bmi_calculated",
+            "value": 25
+          },
+          "description": "BMI is calculated from your height and weight."
+        },
+        {
+          "id": "metabolic_lipid",
+          "category": "Biochemical Evaluation",
+          "label": "Lipid Profile (Triglycerides & HDL)",
+          "reference": "Triglycerides < 150 mg/dL, HDL > 50 mg/dL",
+          "fields": [
+            {
+              "key": "triglycerides",
+              "label": "Triglycerides (mg/dL)",
+              "type": "number"
+            },
+            {
+              "key": "hdl",
+              "label": "HDL Cholesterol (mg/dL)",
+              "type": "number"
+            }
+          ],
+          "rule": {
+            "op": "any",
+            "rules": [
+              {
+                "op": "gte",
+                "field": "triglycerides",
+                "value": 150
+              },
+              {
+                "op": "lt",
+                "field": "hdl",
+                "value": 50
+              }
+            ]
+          },
+          "description": "High triglycerides and low HDL indicate metabolic dysfunction."
+        },
+        {
           "id": "metabolic_bmi_whr",
           "category": "Clinical Evaluation",
           "label": "Height, Weight, BMI, and Waist-to-Hip Ratio (WHR)",
@@ -1156,6 +1199,61 @@
             "field": "ultraprocessed_food",
             "value": "yes"
           }
+        },
+        {
+          "id": "metabolic_apnea",
+          "category": "Clinical Evaluation",
+          "label": "Sleep Apnea & Hypoxia",
+          "fields": [
+            {
+              "key": "sleep_apnea",
+              "label": "Do you have sleep apnea (stop breathing during sleep)?",
+              "type": "yesno"
+            },
+            {
+              "key": "hypoxia",
+              "label": "Do you experience hypoxia (shortness of breath/low oxygen)?",
+              "type": "yesno"
+            }
+          ],
+          "rule": {
+            "op": "any",
+            "rules": [
+              {
+                "op": "eq",
+                "field": "sleep_apnea",
+                "value": "yes"
+              },
+              {
+                "op": "eq",
+                "field": "hypoxia",
+                "value": "yes"
+              }
+            ]
+          },
+          "description": "Apnea involves paused breathing during sleep. Hypoxia is low oxygen levels."
+        },
+        {
+          "id": "metabolic_body_type",
+          "category": "Clinical Evaluation",
+          "label": "Body Type",
+          "fields": [
+            {
+              "key": "body_type",
+              "label": "Body Type",
+              "type": "select",
+              "options": [
+                "Obese",
+                "Lean"
+              ]
+            }
+          ],
+          "rule": {
+            "op": "eq",
+            "field": "body_type",
+            "value": "Obese"
+          },
+          "description": "Obese and lean PCOS have different dietary requirements."
         }
       ]
     }
@@ -1371,5 +1469,68 @@
     "mixed": "Section 3: if two phenotypes tie for the highest tick count, classify as Mixed/Combination Phenotype requiring a dual-targeted protocol.",
     "override_precedence": "Section 3: a triggered biomarker override confirms its phenotype and can flip the tally-based classification. If overrides for two different phenotypes trigger simultaneously, classify as Mixed/Combination.",
     "biomarker_support_note": "Section 3: '3+ positive findings in key biomarkers' for a phenotype is surfaced as supporting evidence alongside the tally-based result."
+  },
+  "first_line": {
+    "label": "First-Line Testing (Rotterdam Criteria)",
+    "questions": [
+      {
+        "id": "rotterdam_irregular_cycle",
+        "label": "Irregular menstrual cycle?",
+        "fields": [
+          {
+            "key": "irregular_cycle",
+            "label": "Do you have an irregular menstrual cycle?",
+            "type": "yesno"
+          }
+        ],
+        "description": "Menstrual cycles longer than 35 days or irregular bleeding."
+      },
+      {
+        "id": "rotterdam_high_testosterone",
+        "label": "High Testosterone (Clinical or Biochemical)",
+        "fields": [
+          {
+            "key": "high_testosterone_symptoms",
+            "label": "Symptoms of high testosterone (excess hair, severe acne)?",
+            "type": "yesno"
+          },
+          {
+            "key": "total_testosterone",
+            "label": "Total Testosterone (ng/dL)",
+            "type": "number"
+          }
+        ],
+        "description": "Clinical signs like hirsutism or elevated testosterone in blood tests."
+      },
+      {
+        "id": "rotterdam_polycystic_ovaries",
+        "label": "Polycystic Ovaries on Ultrasound",
+        "fields": [
+          {
+            "key": "polycystic_ovaries_usg",
+            "label": "Did ultrasound show polycystic ovaries?",
+            "type": "yesno"
+          }
+        ],
+        "description": "More than 20 follicles per ovary or increased ovarian volume."
+      }
+    ]
+  },
+  "exclusions": {
+    "label": "Exclusion Criteria",
+    "questions": [
+      {
+        "id": "exclusion_thyroid",
+        "label": "Other Thyroid or Pituitary disorders?",
+        "fields": [
+          {
+            "key": "exclusion_other_disorders",
+            "label": "Have you been diagnosed with congenital adrenal hyperplasia, androgen-secreting tumors, or Cushing's syndrome?",
+            "type": "yesno"
+          }
+        ],
+        "description": "These conditions can mimic PCOS and must be ruled out."
+      }
+    ]
   }
 }

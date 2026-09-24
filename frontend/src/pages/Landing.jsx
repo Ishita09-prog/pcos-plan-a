@@ -43,14 +43,6 @@ const PHENOTYPES = [
   },
 ]
 
-const STEPS = [
-  { n: '01', t: 'Digitised questionnaire', d: 'Every question, threshold, and weight from the diagnostic document becomes the single JSON source of truth.' },
-  { n: '02', t: 'Scoring engine', d: 'Ticks tallied per phenotype out of 10, banded into Mild / Moderate / Severe.' },
-  { n: '03', t: 'Biomarker overrides', d: 'Four hard lab-value rules can confirm — or flip — the tally-based result.' },
-  { n: '04', t: 'Classification', d: 'Primary phenotype, or a Mixed/Combination protocol when two tie.' },
-  { n: '05', t: 'Targeted protocol', d: 'Diet & exercise mapped by phenotype, region, and dietary preference.' },
-]
-
 export default function Landing() {
   return (
     <div>
@@ -65,72 +57,67 @@ export default function Landing() {
           >
             <span className="chip mx-auto mb-6">
               <span className="h-1.5 w-1.5 rounded-full bg-bio-300 animate-pulse" />
-              Evidence-Based · Fully Transparent Results
+              Empowering Your Health Journey
             </span>
             <h1 className="font-display text-4xl font-bold leading-tight tracking-tight text-white sm:text-6xl">
-              Trace every PCOS phenotype
+              Understanding PCOS
               <br className="hidden sm:block" />
-              <span className="text-gradient-bio"> back to a rule you can read.</span>
+              <span className="text-gradient-bio"> beyond the symptoms.</span>
             </h1>
             <p className="mx-auto mt-6 max-w-xl text-balance text-base text-slate-300 sm:text-lg">
-              A questionnaire-driven classifier for Adrenal, Hormonal, Inflammatory, and
-              Metabolic PCOS phenotypes — with biomarker overrides and a targeted
-              South/North Indian diet &amp; exercise protocol at the end.
+              A comprehensive platform that helps you uncover the root cause of your Polycystic Ovary Syndrome and provides personalized diet & exercise plans tailored to your unique phenotype.
             </p>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <Link to="/assessment" className="btn-primary">
-                Begin Assessment
-                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.2">
+              <Link to="/registration" className="btn-primary">
+                Register Now
+                <svg viewBox="0 0 24 24" className="h-4 w-4 ml-2" fill="none" stroke="currentColor" strokeWidth="2.2">
                   <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </Link>
-              <a
-                href="#how-it-works"
-                className="btn-ghost"
-                onClick={(e) => {
-                  // The app uses HashRouter for routing, which treats any
-                  // "#..." href as a route change -- a plain in-page anchor
-                  // here would get intercepted and navigate to a non-existent
-                  // route instead of scrolling. Scroll manually and skip the
-                  // router entirely.
-                  e.preventDefault()
-                  document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })
-                }}
-              >
-                How the engine works
-              </a>
             </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.25 }}
-            className="relative mx-auto mt-16 max-w-4xl"
-          >
-            <GlassCard strong className="grid grid-cols-2 gap-4 p-6 sm:grid-cols-4 sm:p-8">
-              {[
-                ['44', 'Diagnostic questions'],
-                ['4', 'Root-cause phenotypes'],
-                ['4', 'Hard biomarker overrides'],
-                ['0', 'AI models used'],
-              ].map(([stat, label]) => (
-                <div key={label} className="text-center">
-                  <div className="font-display text-3xl font-bold text-gradient-bio sm:text-4xl">{stat}</div>
-                  <div className="mt-1 text-xs text-slate-400 sm:text-sm">{label}</div>
-                </div>
-              ))}
-            </GlassCard>
           </motion.div>
         </div>
       </section>
 
-      {/* PHENOTYPES */}
+      {/* ABOUT US */}
+      <section className="relative mx-auto max-w-5xl px-6 py-12">
+        <GlassCard className="p-8 sm:p-12 text-center">
+          <SectionHeading
+            eyebrow="Who We Are"
+            title="About Us"
+            desc="We are a team of researchers and health professionals dedicated to bringing clarity to PCOS diagnosis and management. We believe in data-driven, personalized approaches that look beyond generic advice."
+          />
+        </GlassCard>
+      </section>
+
+      {/* INTRODUCTION TO PCOS */}
+      <section className="relative mx-auto max-w-5xl px-6 py-12">
+        <GlassCard className="p-8 sm:p-12">
+          <SectionHeading
+            eyebrow="The Basics"
+            title="Introduction to PCOS"
+            desc="Polycystic Ovary Syndrome (PCOS) is a common hormonal disorder among women of reproductive age. It is characterized by irregular menstrual cycles, excess androgen levels, and polycystic ovaries. But PCOS is not just one condition; it manifests differently in everyone."
+          />
+        </GlassCard>
+      </section>
+
+      {/* AWARENESS */}
+      <section className="relative mx-auto max-w-5xl px-6 py-12">
+        <GlassCard className="p-8 sm:p-12 text-center">
+          <SectionHeading
+            eyebrow="Why It Matters"
+            title="Why PCOS Should Be Treated"
+            desc="Ignoring PCOS can lead to long-term health complications such as type 2 diabetes, cardiovascular issues, and infertility. Early diagnosis and targeted treatment not only manage symptoms but significantly improve your overall quality of life."
+          />
+        </GlassCard>
+      </section>
+
+      {/* ROOT CAUSE (PHENOTYPES) */}
       <section className="relative mx-auto max-w-7xl px-6 py-20">
         <SectionHeading
-          eyebrow="Section 2 · Evaluation"
-          title="Four root-cause phenotypes"
-          desc="Every answer is tallied into exactly one of these categories — no black box, just addition."
+          eyebrow="The Underlying Drivers"
+          title="Understanding Root Causes"
+          desc="PCOS is driven by different underlying metabolic and hormonal factors. We categorize these into four primary phenotypes."
         />
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {PHENOTYPES.map((p, i) => (
@@ -158,55 +145,24 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* HOW IT WORKS */}
-      <section id="how-it-works" className="relative mx-auto max-w-5xl px-6 py-20">
-        <SectionHeading
-          eyebrow="Methodology"
-          title="A transparent pipeline, start to finish"
-          desc="Every one of these steps is a plain, explainable calculation — nothing learned, nothing inferred."
-        />
-        <div className="relative mt-14 space-y-4">
-          <div className="absolute left-[27px] top-2 bottom-2 hidden w-px bg-gradient-to-b from-bio-400/50 via-plasma-400/30 to-transparent sm:block" />
-          {STEPS.map((s, i) => (
-            <motion.div
-              key={s.n}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.45, delay: 0.15 + i * 0.08 }}
-              className="relative flex gap-5 sm:pl-0"
-            >
-              <div className="relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl glass font-display text-sm font-bold text-bio-200">
-                {s.n}
-              </div>
-              <GlassCard className="flex-1 p-5">
-                <div className="font-display text-base font-semibold text-white">{s.t}</div>
-                <p className="mt-1 text-sm text-slate-400">{s.d}</p>
-              </GlassCard>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
       {/* CTA */}
       <section className="relative mx-auto max-w-5xl px-6 pb-28">
         <GlassCard strong className="relative overflow-hidden p-10 text-center sm:p-16">
           <div className="pointer-events-none absolute inset-0 scanline-veil" />
           <h2 className="font-display text-2xl font-bold text-white sm:text-3xl">
-            Ready to see your phenotype breakdown?
+            Ready to find your root cause?
           </h2>
           <p className="mx-auto mt-3 max-w-md text-sm text-slate-400 sm:text-base">
-            About 5–8 minutes. Lab values are optional — the tally still works from
-            symptoms alone, and any biomarkers you add can trigger an override.
+            Join us to get a personalized assessment. Upload your reports or answer a few questions to get started.
           </p>
-          <Link to="/assessment" className="btn-primary mt-8">
-            Begin Assessment
+          <Link to="/registration" className="btn-primary mt-8">
+            Register Now
           </Link>
         </GlassCard>
       </section>
 
       <footer className="relative border-t border-white/5 px-6 py-8 text-center text-xs text-slate-500">
-        Built for the PCOS phenotype classification project · No patient data leaves this
-        deployment unless you connect it to a backend you control.
+        Built for the PCOS management project.
       </footer>
     </div>
   )
@@ -221,3 +177,4 @@ function SectionHeading({ eyebrow, title, desc }) {
     </div>
   )
 }
+

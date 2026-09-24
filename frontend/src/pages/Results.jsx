@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom'
 import GlassCard from '../components/GlassCard.jsx'
 import PhenotypeRadar from '../components/PhenotypeRadar.jsx'
 import SeverityRing from '../components/SeverityRing.jsx'
+import AIPlanChatbot from '../components/AIPlanChatbot.jsx'
 import { fetchResult } from '../lib/api.js'
 
 const PHENOTYPE_META = {
@@ -120,6 +121,18 @@ export default function Results() {
               <PhenotypeProtocolBlock key={block.phenotype} block={block} />
             ))}
             <MitochondrialBlock block={recommendation.mitochondrial_support} />
+          </div>
+        )}
+
+        {/* AI Chatbot */}
+        {!isInconclusive && (
+          <div className="mt-14">
+            <SectionHeading
+              eyebrow="AI Assistant"
+              title="Personalized Lifestyle Chatbot"
+              desc="Chat with our AI assistant to tailor your diet and exercise plan further. Note: This assistant does not provide medical advice on symptoms."
+            />
+            <AIPlanChatbot />
           </div>
         )}
 

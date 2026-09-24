@@ -37,7 +37,7 @@ export function evaluateRule(rule, values) {
 }
 
 const FORMULAS = {
-  bmi: (v) => v.weight_kg / (v.height_cm / 100) ** 2,
+  bmi_calculated: (v) => v.weight_kg / Math.pow(v.height_cm / 100, 2),
   whr: (v) => v.waist_cm / v.hip_cm,
   tg_hdl_ratio: (v) => v.triglycerides / v.hdl,
 }
@@ -217,8 +217,47 @@ export function buildRecommendation(classification, scores, region, dietType) {
   }
 }
 
+export function checkRotterdamAndExclusions(answers) {
+  if (answers.exclusion_other_disorders === 'yes') {
+    return { status: 'excluded', reason: 'Excluded due to other suspected thyroid or pituitary disorders.' }
+  }
+
+  let rotterdamCount = 0
+  if (answers.irregular_cycle === 'yes') rotterdamCount++
+  if (answers.high_testosterone_symptoms === 'yes' || (answers.total_testosterone && Number(answers.total_testosterone) > 45)) rotterdamCount++
+  if (answers.polycystic_ovaries_usg === 'yes') rotterdamCount++
+
+  if (rotterdamCount < 2) {
+    return { status: 'not_pcos', reason: 'Does not meet Rotterdam Criteria (requires 2 of 3: irregular cycles, high testosterone, polycystic ovaries).' }
+  }
+
+  return { status: 'pcos', reason: 'Meets Rotterdam Criteria for PCOS diagnosis.' }
+}
+
 export function runPipeline(answers, region, dietType) {
   const { scores, values } = scorePhenotypes(answers)
+  
+  const rotterdamResult = checkRotterdamAndExclusions(values)
+  if (rotterdamResult.status !== 'pcos') {
+    return {
+      scores,
+      classification: {
+        classification: rotterdamResult.status === 'excluded' ? 'Excluded' : 'Inconclusive — Does not meet Rotterdam Criteria',
+        primary_phenotype: null,
+        phenotypes_involved: [],
+        reason: rotterdamResult.reason,
+        overrides_triggered: [],
+        biomarker_supported_phenotypes: [],
+      },
+      recommendation: {
+        is_mixed: false,
+        phenotype_blocks: [],
+        mitochondrial_support: null,
+      },
+      computed_values: values
+    }
+  }
+
   const overridesTriggered = evaluateOverrides(values)
   const classification = classify(scores, overridesTriggered)
   const recommendation = buildRecommendation(classification, scores, region, dietType)
