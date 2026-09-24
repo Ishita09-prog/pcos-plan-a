@@ -5,10 +5,48 @@ A complete, working build of **Plan A** from the work plan: a deterministic rule
 Metabolic PCOS phenotype(s), applies the four hard biomarker overrides, and maps the
 result to a South/North Indian, Veg/Non-Veg/Vegan diet & exercise protocol.
 
-```
-pcos-plan-a/
-  backend/    FastAPI + PostgreSQL (rule engine, scoring, overrides, classification)
-  frontend/   React + Vite + Tailwind (glassmorphic, particle-field UI)
+## Project structure
+
+```text
+pcos-plan-a-sarayu/
+├── backend/
+│   ├── app/
+│   │   ├── data/
+│   │   ├── routers/
+│   │   ├── __init__.py
+│   │   ├── database.py
+│   │   ├── main.py
+│   │   ├── models.py
+│   │   ├── recommendations.py
+│   │   ├── rule_engine.py
+│   │   └── schemas.py
+│   ├── tests/
+│   │   └── test_rule_engine.py
+│   ├── Dockerfile
+│   ├── fly.toml
+│   └── requirements.txt
+├── frontend/
+│   ├── public/
+│   │   └── media/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── data/
+│   │   ├── lib/
+│   │   ├── pages/
+│   │   ├── App.jsx
+│   │   ├── index.css
+│   │   └── main.jsx
+│   ├── index.html
+│   ├── package.json
+│   ├── postcss.config.js
+│   ├── tailwind.config.js
+│   ├── vercel.json
+│   └── vite.config.js
+├── Claude outputs/
+│   └── DEPLOYMENT_GUIDE.md
+├── .gitignore
+├── README.md
+└── LICENSE (optional, if added later)
 ```
 
 ## Why this is trustworthy (Step 7 of the plan)
