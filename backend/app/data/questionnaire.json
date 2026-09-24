@@ -47,7 +47,9 @@
       "type": "select",
       "options": [
         "South Indian",
-        "North Indian"
+        "North Indian",
+        "East Indian",
+        "West Indian"
       ],
       "source": "Section 4 header (Targeted South Indian & North Indian Nutrition Guidelines)"
     },

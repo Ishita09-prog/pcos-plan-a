@@ -105,6 +105,16 @@
         "Dinner": "Bajra or Jowar roti paired with bottle gourd (Lauki) sabzi and a small portion of sweet potato",
         "Snacks/Drinks": "Sattu drink (unsweetened) with roasted cumin; roasted makhana with pumpkin seeds",
         "Vegetables": "Spinach (Palak), bottle gourd, pumpkin (Kaddu)"
+      },
+      "East Indian": {
+        "Dinner": "Red rice with a light lau-chingri (bottle gourd) curry, cooked in mustard oil with minimal spice",
+        "Snacks/Drinks": "Thin, unsweetened ghol (spiced buttermilk) with roasted cumin; steamed pumpkin seeds",
+        "Vegetables": "Bottle gourd (lau), pumpkin (kumro), drumstick (sajne data)"
+      },
+      "West Indian": {
+        "Dinner": "Bajra or jowar bhakri with lauki-methi sabzi and a small portion of sweet potato",
+        "Snacks/Drinks": "Unsweetened chaas with roasted jeera and hing; roasted makhana with pumpkin seeds",
+        "Vegetables": "Doodhi (bottle gourd), methi (fenugreek greens), pumpkin (bhopla)"
       }
     },
     "inflammatory": {
@@ -122,6 +132,16 @@
         "Proteins": "Grilled paneer (if dairy tolerated) or tofu tikka; moong dal & spinach chilla",
         "Mains": "Gluten-free Missi roti (besan) served with Rajma or Chana masala cooked in mustard oil",
         "Gut Support": "Homemade fermented carrot drink (Kanji); jeera-ajwain decoction"
+      },
+      "East Indian": {
+        "Proteins": "Rohu or hilsa fish curry cooked in mustard oil with turmeric and minimal chilli",
+        "Mains": "Moong dal khichuri with bottle gourd, cooked in mustard oil instead of refined oil",
+        "Gut Support": "Thin ghol (spiced buttermilk) with ginger and curry leaves"
+      },
+      "West Indian": {
+        "Proteins": "Grilled pomfret or steamed moong dal-methi muthia (not fried)",
+        "Mains": "Gluten-free bajra dhebra or jowar bhakri with garlic chutney",
+        "Gut Support": "Unsweetened kokum sherbet; homemade buttermilk with ajwain"
       }
     },
     "hormonal": {
@@ -139,6 +159,16 @@
         "Mains": "Multigrain roti made with added flaxseed powder, served with Sarson ka saag or Gobhi-Matar sabzi",
         "Vegetables": "Broccoli, cabbage, cauliflower (Gobhi), radish (Mooli) stir-fries",
         "Sides/Snacks": "Black chana chaat with lemon juice and coriander; roasted sesame (Til) seeds"
+      },
+      "East Indian": {
+        "Mains": "Cabbage or broccoli ghonto (light stir-fry) in mustard oil with ground flaxseed sprinkled on top",
+        "Vegetables": "Cauliflower (phulkopi) and cabbage stir-fries; banana flower (mochar ghonto) for fibre",
+        "Sides/Snacks": "Roasted til (sesame) and flaxseed chikki (no added sugar); chana ghugni with lemon"
+      },
+      "West Indian": {
+        "Mains": "Bajra roti with added flaxseed powder, served with a low-oil methi sabzi",
+        "Vegetables": "Cabbage, cauliflower, and methi stir-fries with minimal oil",
+        "Sides/Snacks": "Roasted sesame chikki (no added sugar); black chana chaat with lemon and coriander"
       }
     },
     "metabolic": {
@@ -156,6 +186,16 @@
         "Mains": "Besan or moong dal chilla stuffed with grated paneer/tofu and finely chopped vegetables",
         "Proteins": "Egg bhurji or soya bean curry paired with a small serving of brown rice or oats roti",
         "Snacks": "Boiled sprout salad with cucumber and tomatoes; roasted chana"
+      },
+      "East Indian": {
+        "Mains": "Cholar dal (Bengal gram) with a small portion of brown rice; vegetables and protein eaten first",
+        "Proteins": "Steamed fish (bhapa maach) or egg curry with a side of sauteed greens",
+        "Snacks": "Roasted chana; steamed sprouted moong (ankurit moong) chaat"
+      },
+      "West Indian": {
+        "Mains": "Moong dal or jowar khichdi with extra vegetables and a small rice portion",
+        "Proteins": "Egg bhurji or soya chunk curry with a side salad eaten first",
+        "Snacks": "Roasted chana; sprouted matki (moth bean) salad with cucumber and lemon"
       }
     },
     "mitochondrial": {
@@ -173,6 +213,16 @@
         "Mains/Sides": "Beetroot and carrot sabzi; palak saag rich in iron and nitrates",
         "Drinks": "Amla and spinach shot; pomegranate-beetroot juice (unsweetened)",
         "Proteins": "Goat liver/mutton curry or iron-rich lentils (black urad dal)"
+      },
+      "East Indian": {
+        "Mains/Sides": "Beetroot light stir-fry; notte shak (red spinach) sabzi rich in iron",
+        "Drinks": "Amla juice with a pinch of black salt; unsweetened beetroot-carrot juice",
+        "Proteins": "Iron/B12-rich fish such as rohu or hilsa; egg curry"
+      },
+      "West Indian": {
+        "Mains/Sides": "Beetroot and carrot sabzi; methi (fenugreek) and spinach stir-fry for iron",
+        "Drinks": "Amla-ginger shot; unsweetened kokum-beetroot cooler",
+        "Proteins": "Iron-rich moong-methi dal; liver in moderation for B12"
       }
     }
   },
