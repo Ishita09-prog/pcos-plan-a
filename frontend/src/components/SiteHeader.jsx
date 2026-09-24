@@ -20,6 +20,12 @@ export default function SiteHeader() {
         </Link>
 
         <nav className="flex items-center gap-2">
+          <Link to="/journey" className="btn-ghost !px-4 !py-2 text-sm hidden sm:inline-flex">
+            My Journey
+          </Link>
+          <Link to="/feedback" className="btn-ghost !px-4 !py-2 text-sm hidden sm:inline-flex">
+            Feedback
+          </Link>
           <Link to="/assessment" className="btn-ghost !px-4 !py-2 text-sm">
             {onLanding ? 'Start Assessment' : 'Restart'}
           </Link>

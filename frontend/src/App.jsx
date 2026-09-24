@@ -7,6 +7,8 @@ import Landing from './pages/Landing.jsx'
 import Registration from './pages/Registration.jsx'
 import Questionnaire from './pages/Questionnaire.jsx'
 import Results from './pages/Results.jsx'
+import Journey from './pages/Journey.jsx'
+import Feedback from './pages/Feedback.jsx'
 
 // Video is intentionally landing-page-only for now (per Ishi: "keep only landing
 // page video for now") — assessment/results keep their still, duotoned images.
@@ -15,6 +17,8 @@ const BACKDROPS = {
   '/registration': { image: '/media/hero-bg.jpg' },
   '/assessment': { image: '/media/assessment-bg.jpg' },
   '/results': { image: '/media/results-bg.jpg' },
+  '/journey': { image: '/media/hero-bg.jpg' },
+  '/feedback': { image: '/media/hero-bg.jpg' },
 }
 
 function backdropFor(pathname) {
@@ -44,6 +48,8 @@ export default function App() {
               <Route path="/assessment" element={<Questionnaire />} />
               <Route path="/results/:id" element={<Results />} />
               <Route path="/results" element={<Results />} />
+              <Route path="/journey" element={<Journey />} />
+              <Route path="/feedback" element={<Feedback />} />
             </Routes>
           </AnimatePresence>
         </main>
