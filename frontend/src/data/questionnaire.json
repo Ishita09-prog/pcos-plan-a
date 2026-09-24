@@ -25,14 +25,13 @@
     },
     {
       "id": "living_environment",
-      "label": "Current Living Environment",
+      "label": "Living Environment",
       "type": "select",
       "options": [
-        "Urban",
-        "Industrial",
-        "Agricultural",
-        "High pollutant exposure",
-        "Rural / low exposure"
+        "Urban - Polluted",
+        "Urban - Not polluted",
+        "Rural - Polluted",
+        "Rural - Not polluted"
       ],
       "source": "Section 1, Row 6"
     },
@@ -41,12 +40,6 @@
       "label": "When was PCOS diagnosed (age)?",
       "type": "number",
       "source": "Section 1, Row 8"
-    },
-    {
-      "id": "irregular_cycle_flag",
-      "label": "Do you have an irregular menstrual cycle?",
-      "type": "yesno",
-      "source": "Section 1, Row 9"
     },
     {
       "id": "region_preference",
@@ -64,6 +57,7 @@
       "type": "select",
       "options": [
         "Vegetarian",
+        "Eggetarian",
         "Non-Vegetarian",
         "Vegan"
       ],
@@ -155,19 +149,20 @@
                 "value": 95
               }
             ]
-          }
+          },
+          "description": "Basic vitals -- high blood pressure or resting heart rate with low oxygen can point to HPA-axis (stress) overactivation."
         },
         {
           "id": "adrenal_dheas",
           "category": "Biochemical Evaluation",
           "label": "DHEA-S (Dehydroepiandrosterone Sulfate)",
-          "reference": "100-250 \u00b5g/dL (isolated >350 = Adrenal)",
+          "reference": "100-250 µg/dL (isolated >350 = Adrenal)",
           "fields": [
             {
               "key": "dhea_s",
               "label": "DHEA-S",
               "type": "number",
-              "unit": "\u00b5g/dL"
+              "unit": "µg/dL"
             }
           ],
           "rule": {
@@ -177,19 +172,20 @@
               100,
               250
             ]
-          }
+          },
+          "description": "DHEA-S is an adrenal androgen; a level far above normal is a strong sign of the Adrenal phenotype."
         },
         {
           "id": "adrenal_cortisol",
           "category": "Biochemical Evaluation",
           "label": "Fasting Cortisol (AM) / Salivary Cortisol Curve",
-          "reference": "10-20 \u00b5g/dL (AM)",
+          "reference": "10-20 µg/dL (AM)",
           "fields": [
             {
               "key": "cortisol_am",
               "label": "AM Cortisol",
               "type": "number",
-              "unit": "\u00b5g/dL"
+              "unit": "µg/dL"
             }
           ],
           "rule": {
@@ -199,7 +195,8 @@
               10,
               20
             ]
-          }
+          },
+          "description": "Cortisol is your main stress hormone; an abnormal morning level suggests HPA-axis dysregulation."
         },
         {
           "id": "adrenal_stress",
@@ -289,7 +286,8 @@
                 "value": "yes"
               }
             ]
-          }
+          },
+          "description": "Short or broken sleep raises cortisol and worsens adrenal-driven symptoms."
         },
         {
           "id": "adrenal_fatigue",
@@ -307,7 +305,8 @@
             "op": "eq",
             "field": "adrenal_fatigue",
             "value": "yes"
-          }
+          },
+          "description": "Feeling worn out even after rest can be a sign of ongoing stress-axis overload."
         },
         {
           "id": "adrenal_worried",
@@ -325,7 +324,8 @@
             "op": "eq",
             "field": "worried",
             "value": "yes"
-          }
+          },
+          "description": "Frequent worry about the past, future, or health is a common stress-axis symptom."
         },
         {
           "id": "adrenal_concentration",
@@ -343,7 +343,8 @@
             "op": "eq",
             "field": "poor_concentration",
             "value": "yes"
-          }
+          },
+          "description": "Trouble focusing for long periods can be linked to chronic stress."
         },
         {
           "id": "adrenal_breathing",
@@ -361,7 +362,8 @@
             "op": "eq",
             "field": "shallow_breathing",
             "value": "yes"
-          }
+          },
+          "description": "Fast, shallow chest-breathing (over 20 breaths/min) is a physical sign of a stressed nervous system."
         },
         {
           "id": "adrenal_moods",
@@ -379,7 +381,8 @@
             "op": "eq",
             "field": "mood_swings",
             "value": "yes"
-          }
+          },
+          "description": "Sudden irritability, anger, or low mood can reflect stress-hormone swings."
         }
       ]
     },
@@ -422,7 +425,8 @@
                 "value": "yes"
               }
             ]
-          }
+          },
+          "description": "Cycles shorter than 21 or longer than 35 days point toward ovarian/hormonal imbalance."
         },
         {
           "id": "hormonal_hirsutism",
@@ -448,7 +452,8 @@
               "Mild",
               "Severe"
             ]
-          }
+          },
+          "description": "Excess coarse hair on the face, chest, chin, or abdomen is a classic sign of high androgens."
         },
         {
           "id": "hormonal_alopecia",
@@ -466,7 +471,8 @@
             "op": "eq",
             "field": "alopecia",
             "value": "yes"
-          }
+          },
+          "description": "Thinning hair on the scalp in a male-pattern distribution can be androgen-driven."
         },
         {
           "id": "hormonal_acne",
@@ -485,7 +491,8 @@
             "field": "sym_acne",
             "value": "yes"
           },
-          "shared_field": "sym_acne"
+          "shared_field": "sym_acne",
+          "description": "Deep, cystic, or jawline acne that starts in adulthood is often androgen-linked."
         },
         {
           "id": "hormonal_ultrasound",
@@ -519,7 +526,8 @@
                 "value": 10
               }
             ]
-          }
+          },
+          "description": "An ultrasound showing many small follicles or an enlarged ovary supports the Rotterdam ultrasound criterion."
         },
         {
           "id": "hormonal_total_testosterone",
@@ -541,7 +549,8 @@
               20,
               45
             ]
-          }
+          },
+          "description": "Total testosterone measures overall androgen levels in the blood."
         },
         {
           "id": "hormonal_free_testosterone",
@@ -565,7 +574,8 @@
               0.1,
               0.85
             ]
-          }
+          },
+          "description": "Free testosterone is the biologically active portion not bound to protein."
         },
         {
           "id": "hormonal_lh_fsh",
@@ -585,7 +595,8 @@
             "op": "gte",
             "field": "lh_fsh_ratio",
             "value": 2
-          }
+          },
+          "description": "An LH:FSH ratio above roughly 2:1 is a classic ovarian/hormonal PCOS marker."
         },
         {
           "id": "hormonal_shbg",
@@ -607,7 +618,8 @@
               40,
               100
             ]
-          }
+          },
+          "description": "Low SHBG lets more testosterone circulate freely, worsening androgen symptoms."
         },
         {
           "id": "hormonal_post_pill",
@@ -625,7 +637,8 @@
             "op": "eq",
             "field": "post_pill_amenorrhea",
             "value": "yes"
-          }
+          },
+          "description": "Periods that don't return for months after stopping birth control can unmask an underlying hormonal imbalance."
         }
       ]
     },
@@ -650,7 +663,8 @@
             "field": "sym_acne",
             "value": "yes"
           },
-          "shared_field": "sym_acne"
+          "shared_field": "sym_acne",
+          "description": "The same acne pattern can also flag an inflammatory/immune driver, not just androgens."
         },
         {
           "id": "inflammatory_joint_pain",
@@ -668,7 +682,8 @@
             "op": "eq",
             "field": "joint_pain",
             "value": "yes"
-          }
+          },
+          "description": "Unexplained joint pain, swelling, or food sensitivities can point to systemic inflammation."
         },
         {
           "id": "inflammatory_hscrp",
@@ -689,7 +704,8 @@
             "op": "gte",
             "field": "hs_crp",
             "value": 1.0
-          }
+          },
+          "description": "hs-CRP is a blood marker of low-grade, body-wide inflammation."
         },
         {
           "id": "inflammatory_thyroid",
@@ -728,13 +744,14 @@
                 "value": "yes"
               }
             ]
-          }
+          },
+          "description": "Thyroid imbalances and thyroid antibodies often travel alongside inflammatory PCOS."
         },
         {
           "id": "inflammatory_vitd_zinc",
           "category": "Biochemical Evaluation",
           "label": "Vitamin D3 (25-OH) & Serum Zinc",
-          "reference": "> 40 ng/mL / 90-120 \u00b5g/dL",
+          "reference": "> 40 ng/mL / 90-120 µg/dL",
           "fields": [
             {
               "key": "vitamin_d3",
@@ -746,7 +763,7 @@
               "key": "serum_zinc",
               "label": "Serum Zinc",
               "type": "number",
-              "unit": "\u00b5g/dL"
+              "unit": "µg/dL"
             }
           ],
           "rule": {
@@ -766,7 +783,8 @@
                 ]
               }
             ]
-          }
+          },
+          "description": "Low vitamin D or zinc can both contribute to and result from chronic inflammation."
         },
         {
           "id": "inflammatory_edc",
@@ -792,7 +810,8 @@
               "Moderate",
               "High"
             ]
-          }
+          },
+          "description": "Everyday exposure to plastics, pesticides, and other endocrine-disrupting chemicals can drive inflammation."
         },
         {
           "id": "inflammatory_heavy_metal",
@@ -810,7 +829,8 @@
             "op": "eq",
             "field": "heavy_metal_exposure",
             "value": "yes"
-          }
+          },
+          "description": "Ongoing exposure to heavy metals or industrial chemicals is a less common but real inflammatory trigger."
         },
         {
           "id": "inflammatory_gut",
@@ -833,7 +853,8 @@
             "op": "eq",
             "field": "gut_health_issue",
             "value": "yes"
-          }
+          },
+          "description": "Bloating, IBS-type symptoms, or irregular bowel movements can signal gut-driven inflammation."
         },
         {
           "id": "inflammatory_autoimmune",
@@ -851,7 +872,8 @@
             "op": "eq",
             "field": "autoimmune_history",
             "value": "yes"
-          }
+          },
+          "description": "A personal history of autoimmune disease or frequent low-grade infections raises inflammatory risk."
         },
         {
           "id": "inflammatory_sunlight",
@@ -884,7 +906,8 @@
                 "value": "yes"
               }
             ]
-          }
+          },
+          "description": "Too little sun exposure can lower vitamin D and contribute to inflammation."
         }
       ]
     },
@@ -892,30 +915,6 @@
       "label": "Metabolic PCOS (Insulin-Resistant)",
       "source": "Section 2, Table 4",
       "questions": [
-        {
-          "id": "metabolic_bmi",
-          "category": "Clinical Evaluation",
-          "label": "Body Mass Index (BMI)",
-          "reference": "BMI 18.5 - 24.9",
-          "fields": [
-            {
-              "key": "height_cm",
-              "label": "Height (cm)",
-              "type": "number"
-            },
-            {
-              "key": "weight_kg",
-              "label": "Weight (kg)",
-              "type": "number"
-            }
-          ],
-          "rule": {
-            "op": "gte",
-            "field": "bmi_calculated",
-            "value": 25
-          },
-          "description": "BMI is calculated from your height and weight."
-        },
         {
           "id": "metabolic_lipid",
           "category": "Biochemical Evaluation",
@@ -1002,7 +1001,8 @@
                 "value": 0.8
               }
             ]
-          }
+          },
+          "description": "BMI and waist-to-hip ratio together flag insulin-resistance-related weight patterns."
         },
         {
           "id": "metabolic_acanthosis",
@@ -1020,7 +1020,8 @@
             "op": "eq",
             "field": "acanthosis_nigricans",
             "value": "yes"
-          }
+          },
+          "description": "Dark, velvety skin patches (neck, underarms) are a visible sign of insulin resistance."
         },
         {
           "id": "metabolic_skin_tags",
@@ -1038,7 +1039,8 @@
             "op": "eq",
             "field": "skin_tags",
             "value": "yes"
-          }
+          },
+          "description": "Multiple skin tags are commonly associated with high insulin levels."
         },
         {
           "id": "metabolic_postprandial",
@@ -1056,13 +1058,14 @@
             "op": "eq",
             "field": "postprandial_slump",
             "value": "yes"
-          }
+          },
+          "description": "Feeling foggy or sleepy after meals can indicate blood-sugar swings from insulin resistance."
         },
         {
           "id": "metabolic_glucose_insulin",
           "category": "Biochemical Evaluation",
           "label": "Fasting Glucose & Fasting Insulin",
-          "reference": "< 95 mg/dL / < 5 \u00b5IU/mL",
+          "reference": "< 95 mg/dL / < 5 µIU/mL",
           "fields": [
             {
               "key": "fasting_glucose",
@@ -1074,7 +1077,7 @@
               "key": "fasting_insulin",
               "label": "Fasting Insulin",
               "type": "number",
-              "unit": "\u00b5IU/mL",
+              "unit": "µIU/mL",
               "min": 0,
               "step": 0.1
             }
@@ -1093,7 +1096,8 @@
                 "value": 5
               }
             ]
-          }
+          },
+          "description": "Fasting glucose and insulin together are the core blood tests for insulin resistance."
         },
         {
           "id": "metabolic_hba1c",
@@ -1114,7 +1118,8 @@
             "op": "gte",
             "field": "hba1c",
             "value": 5.4
-          }
+          },
+          "description": "HbA1c reflects your average blood sugar over the past ~3 months."
         },
         {
           "id": "metabolic_homair",
@@ -1134,7 +1139,8 @@
             "op": "gte",
             "field": "homa_ir",
             "value": 1.5
-          }
+          },
+          "description": "HOMA-IR is a calculated score of how well your body responds to insulin."
         },
         {
           "id": "metabolic_lipids",
@@ -1162,7 +1168,8 @@
             "op": "gte",
             "field": "tg_hdl_ratio",
             "value": 2.0
-          }
+          },
+          "description": "A high triglyceride-to-HDL ratio is a strong indirect marker of insulin resistance."
         },
         {
           "id": "metabolic_activity",
@@ -1180,7 +1187,8 @@
             "op": "eq",
             "field": "sedentary",
             "value": "yes"
-          }
+          },
+          "description": "Low daily activity contributes to and worsens insulin resistance over time."
         },
         {
           "id": "metabolic_ultraprocessed",
@@ -1198,18 +1206,36 @@
             "op": "eq",
             "field": "ultraprocessed_food",
             "value": "yes"
-          }
+          },
+          "description": "Frequent ultra-processed or high-sugar food spikes insulin and blood glucose."
         },
         {
-          "id": "metabolic_apnea",
+          "id": "metabolic_sleep_apnea",
           "category": "Clinical Evaluation",
-          "label": "Sleep Apnea & Hypoxia",
+          "label": "Sleep Apnea",
+          "reference": "No diagnosed sleep apnea",
+          "shared_field": "sleep_apnea",
           "fields": [
             {
               "key": "sleep_apnea",
               "label": "Do you have sleep apnea (stop breathing during sleep)?",
               "type": "yesno"
-            },
+            }
+          ],
+          "rule": {
+            "op": "eq",
+            "field": "sleep_apnea",
+            "value": "yes"
+          },
+          "description": "Sleep apnea is a strong driver of insulin resistance, independent of weight."
+        },
+        {
+          "id": "metabolic_hypoxia",
+          "category": "Clinical Evaluation",
+          "label": "Hypoxia (Shortness of Breath / Low Oxygen)",
+          "reference": "No hypoxia/low-oxygen symptoms",
+          "shared_field": "hypoxia",
+          "fields": [
             {
               "key": "hypoxia",
               "label": "Do you experience hypoxia (shortness of breath/low oxygen)?",
@@ -1217,21 +1243,11 @@
             }
           ],
           "rule": {
-            "op": "any",
-            "rules": [
-              {
-                "op": "eq",
-                "field": "sleep_apnea",
-                "value": "yes"
-              },
-              {
-                "op": "eq",
-                "field": "hypoxia",
-                "value": "yes"
-              }
-            ]
+            "op": "eq",
+            "field": "hypoxia",
+            "value": "yes"
           },
-          "description": "Apnea involves paused breathing during sleep. Hypoxia is low oxygen levels."
+          "description": "Low blood oxygen can worsen insulin resistance and metabolic strain."
         },
         {
           "id": "metabolic_body_type",
@@ -1253,7 +1269,8 @@
             "field": "body_type",
             "value": "Obese"
           },
-          "description": "Obese and lean PCOS have different dietary requirements."
+          "description": "Obese and lean PCOS have different dietary requirements.",
+          "reference": "Self-reported body type; used only to tailor the diet/exercise plan, not scored against a 'normal' value"
         }
       ]
     }
@@ -1263,40 +1280,63 @@
     "source": "Section 2, Table 5 (screening axis, scored out of 4, not one of the 4 main phenotypes)",
     "questions": [
       {
-        "id": "mito_depression",
+        "id": "mito_fatigue",
         "category": "Root Cause Analysis",
-        "label": "History of Depression or Chronic Low Energy",
+        "label": "Fatigue / Low Energy",
         "reference": "Indicates cellular ATP/mitochondrial exhaustion",
         "fields": [
           {
-            "key": "mito_depression",
-            "label": "History of depression or chronic low energy?",
+            "key": "mito_fatigue",
+            "label": "Are you feeling fatigued or low on energy most days?",
             "type": "yesno"
           }
         ],
         "rule": {
           "op": "eq",
-          "field": "mito_depression",
+          "field": "mito_fatigue",
           "value": "yes"
-        }
+        },
+        "description": "A simple everyday fatigue check, asked directly instead of screening for depression."
       },
       {
         "id": "mito_hypoxia",
         "category": "Root Cause Analysis",
-        "label": "Hypoxia Indicators (shallow breathing, sleep apnea, anemia)",
+        "label": "Hypoxia Indicators (shallow breathing, low oxygen, anemia)",
         "reference": "Cellular hypoxia impairs ovarian follicle maturation",
         "fields": [
           {
-            "key": "mito_hypoxia",
-            "label": "Shallow breathing, sleep apnea, or anemia?",
+            "key": "hypoxia",
+            "label": "Shallow/chest breathing, low-oxygen symptoms, or anemia?",
             "type": "yesno"
           }
         ],
         "rule": {
           "op": "eq",
-          "field": "mito_hypoxia",
+          "field": "hypoxia",
           "value": "yes"
-        }
+        },
+        "description": "Shallow breathing and anemia both reduce how much oxygen reaches your tissues.",
+        "shared_field": "hypoxia"
+      },
+      {
+        "id": "mito_sleep_apnea",
+        "category": "Root Cause Analysis",
+        "label": "Sleep Apnea",
+        "reference": "Nocturnal hypoxia disrupts mitochondrial recovery during sleep",
+        "fields": [
+          {
+            "key": "sleep_apnea",
+            "label": "Do you have sleep apnea (stop breathing during sleep)?",
+            "type": "yesno"
+          }
+        ],
+        "rule": {
+          "op": "eq",
+          "field": "sleep_apnea",
+          "value": "yes"
+        },
+        "description": "Sleep apnea is asked on its own, separately from general hypoxia symptoms.",
+        "shared_field": "sleep_apnea"
       },
       {
         "id": "mito_pem",
@@ -1314,7 +1354,8 @@
           "op": "eq",
           "field": "mito_pem",
           "value": "yes"
-        }
+        },
+        "description": "Crashing or feeling wiped out after normal exercise can signal impaired cellular energy production."
       },
       {
         "id": "mito_detraining",
@@ -1332,7 +1373,8 @@
           "op": "eq",
           "field": "mito_detraining",
           "value": "yes"
-        }
+        },
+        "description": "Suddenly stopping regular sport/exercise can itself disrupt hormonal and energy balance."
       }
     ]
   },
@@ -1340,7 +1382,7 @@
     {
       "id": "metabolic_override",
       "phenotype": "metabolic",
-      "label": "Fasting Insulin > 10 \u00b5IU/mL or HOMA-IR > 2.0",
+      "label": "Fasting Insulin > 10 µIU/mL or HOMA-IR > 2.0",
       "reference": "Confirms Metabolic Phenotype",
       "source": "Section 3, Key Biomarker Priority Overrules, bullet 1",
       "rule": {
@@ -1362,7 +1404,7 @@
     {
       "id": "adrenal_override",
       "phenotype": "adrenal",
-      "label": "Isolated DHEA-S > 350 \u00b5g/dL with normal insulin",
+      "label": "Isolated DHEA-S > 350 µg/dL with normal insulin",
       "reference": "Confirms Adrenal Phenotype",
       "source": "Section 3, Key Biomarker Priority Overrules, bullet 2",
       "rule": {

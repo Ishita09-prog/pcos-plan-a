@@ -203,6 +203,11 @@
         "Mid-Morning": "Unsweetened Ragi malt or Sattu drink with cumin",
         "Evening": "Pumpkin & sunflower seed Sundal or roasted makhana",
         "Beverages": "Chamomile tea, warm golden almond milk, Ashwagandha decoction"
+      },
+      "Eggetarian": {
+        "Breakfast": "Ragi & vegetable chilla with coconut chutney and 1-2 boiled eggs",
+        "Lunch": "Brown rice with Toor dal, Okra (Bhindi) sabzi, and fresh curd",
+        "Dinner": "Foxtail millet (Thinai) or Jowar roti with pumpkin Kootu / Lauki curry"
       }
     },
     "inflammatory": {
@@ -230,6 +235,11 @@
         "Mid-Morning": "Spiced thin buttermilk (Mor) with ginger & hing (or coconut water for vegans)",
         "Evening": "Boiled black chickpea (Kondaikadalai) chaat with lemon",
         "Beverages": "Fermented carrot Kanji, jeera-ajwain tea, turmeric-ginger shot"
+      },
+      "Eggetarian": {
+        "Breakfast": "Pesarattu (sprouted green gram dosa) with ginger-mint chutney and a soft-boiled egg",
+        "Lunch": "Besan missi roti with Rajma / Chana masala & turmeric cabbage",
+        "Dinner": "Oats/Sorghum Khichdi cooked with turmeric, ghee, and mixed veggies"
       }
     },
     "hormonal": {
@@ -257,6 +267,11 @@
         "Mid-Morning": "Black chana chaat with coriander & lemon juice",
         "Evening": "Roasted sesame seeds (Til) and pumpkin seed mix",
         "Beverages": "Spearmint tea (twice daily for androgen balance), fresh Amla juice"
+      },
+      "Eggetarian": {
+        "Breakfast": "Millet idlis with urad dal, 1 tbsp ground flaxseeds in batter, and a boiled egg",
+        "Lunch": "Multigrain/Besan roti with Sarson ka Saag or Gobhi-Matar sabzi & curd",
+        "Dinner": "Foxtail millet with steamed broccoli/cauliflower Kootu and dal"
       }
     },
     "metabolic": {
@@ -284,6 +299,11 @@
         "Mid-Morning": "Sprouts salad (cucumber, tomato, lemon, sprouted moong)",
         "Evening": "Roasted chana (black chickpea) or soaked walnuts & almonds",
         "Beverages": "Apple cider vinegar water before meals, green tea, Amla-ginger shot"
+      },
+      "Eggetarian": {
+        "Breakfast": "High-protein Besan or moong dal chilla stuffed with paneer, plus 2 egg whites",
+        "Lunch": "Horse gram (Kollu) Usili / Rajma with brown rice & cucumber salad",
+        "Dinner": "Tofu & sauteed vegetable stir-fry with oats/millet roti"
       }
     },
     "mitochondrial": {
@@ -311,7 +331,34 @@
         "Mid-Morning": "Fresh Amla juice with ginger and turmeric",
         "Evening": "Pomegranate seeds with soaked walnuts",
         "Beverages": "Beetroot-lemon shot, curry leaf (Karuveppilai) tea, hibiscus tea"
+      },
+      "Eggetarian": {
+        "Breakfast": "Spinach & beetroot chilla with sesame-garlic chutney and a boiled egg",
+        "Lunch": "Brown rice with Palak dal, beetroot poriyal/sabzi, and curd",
+        "Dinner": "Mushroom & vegetable stew with millet roti"
       }
+    }
+  },
+  "body_type_modifiers": {
+    "Obese": {
+      "diet_strategy": [
+        "Moderate overall caloric deficit (roughly 300-500 kcal/day) built from the phenotype plan above, not extreme restriction",
+        "Prioritise protein and fibre at every meal to stay full on fewer calories",
+        "Limit refined carbs and fried food; keep portion sizes of grains modest"
+      ],
+      "exercise": [
+        "Add 150+ min/week of moderate cardio (brisk walking, cycling) on top of the phenotype's exercise plan, as tolerated",
+        "Include 2x/week resistance training to preserve muscle while losing weight"
+      ]
+    },
+    "Lean": {
+      "diet_strategy": [
+        "Do not restrict calories -- focus on nutrient density and meal regularity instead of weight loss",
+        "Ensure adequate healthy fats and protein at each meal to support hormone production"
+      ],
+      "exercise": [
+        "Favour moderate, restorative movement (yoga, walking, light strength work) over high-intensity or high-volume training, which can worsen lean-PCOS hormonal stress"
+      ]
     }
   }
 }

@@ -23,7 +23,8 @@ def get_questionnaire():
 def submit(payload: schemas.SubmissionCreate, db: Session = Depends(get_db)):
     result = run_pipeline(payload.answers)
     recommendation = build_recommendation(
-        result["classification"], result["scores"], payload.region_preference, payload.diet_type
+        result["classification"], result["scores"], payload.region_preference, payload.diet_type,
+        payload.answers.get("body_type"),
     )
 
     record = models.Submission(

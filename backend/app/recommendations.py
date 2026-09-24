@@ -11,16 +11,23 @@ from typing import Any, Dict, List
 from .rule_engine import DIET_PROTOCOLS
 
 
-def _phenotype_block(phenotype_id: str, region: str, diet_type: str) -> Dict[str, Any]:
+def _body_type_modifier(body_type: str) -> Dict[str, Any]:
+    modifiers = DIET_PROTOCOLS.get("body_type_modifiers", {})
+    return modifiers.get(body_type) if body_type else None
+
+
+def _phenotype_block(phenotype_id: str, region: str, diet_type: str, body_type: str = None) -> Dict[str, Any]:
     general = DIET_PROTOCOLS["general_protocol"][phenotype_id]
     regional = DIET_PROTOCOLS["regional_suggestions"][phenotype_id]
     plan = DIET_PROTOCOLS["meal_plans"][phenotype_id]
+    modifier = _body_type_modifier(body_type)
     return {
         "phenotype": phenotype_id,
         "focus": general["focus"],
-        "diet_strategy": general["diet_strategy"],
-        "exercise": general["exercise"],
+        "diet_strategy": general["diet_strategy"] + modifier["diet_strategy"] if modifier else general["diet_strategy"],
+        "exercise": general["exercise"] + modifier["exercise"] if modifier else general["exercise"],
         "priorities": general["priorities"],
+        "body_type": body_type,
         "regional_suggestions": {
             "region": region,
             "primary_focus": regional["primary_focus"],
@@ -35,14 +42,18 @@ def _phenotype_block(phenotype_id: str, region: str, diet_type: str) -> Dict[str
 
 
 def build_recommendation(classification: Dict[str, Any], scores: Dict[str, Any],
-                          region: str, diet_type: str) -> Dict[str, Any]:
+                          region: str, diet_type: str, body_type: str = None) -> Dict[str, Any]:
+    """Step 5 recommendation mapping. `body_type` (Obese/Lean, mentor
+    feedback item) layers extra diet/exercise guidance on top of the
+    phenotype-general protocol -- an obese-phenotype and a lean-phenotype
+    person with the same classification still need different plans."""
     involved = classification["phenotypes_involved"]
     is_mixed = classification["classification"].startswith("Mixed")
 
-    blocks: List[Dict[str, Any]] = [_phenotype_block(pid, region, diet_type) for pid in involved]
+    blocks: List[Dict[str, Any]] = [_phenotype_block(pid, region, diet_type, body_type) for pid in involved]
 
     mito_flag = scores.get("mitochondrial", {}).get("flag", False)
-    mitochondrial_block = _phenotype_block("mitochondrial", region, diet_type)
+    mitochondrial_block = _phenotype_block("mitochondrial", region, diet_type, body_type)
 
     return {
         "is_mixed": is_mixed,

@@ -37,9 +37,26 @@ export function evaluateRule(rule, values) {
 }
 
 const FORMULAS = {
-  bmi_calculated: (v) => v.weight_kg / Math.pow(v.height_cm / 100, 2),
+  bmi: (v) => v.weight_kg / Math.pow(v.height_cm / 100, 2),
   whr: (v) => v.waist_cm / v.hip_cm,
   tg_hdl_ratio: (v) => v.triglycerides / v.hdl,
+}
+
+// Live BMI helper for the Metabolic page (mentor feedback: show BMI as soon
+// as height/weight are entered, not just after submitting). Not tied to the
+// rule engine's internal `bmi` field name on purpose, so the UI can call it
+// straight from raw form input.
+export function liveBmi(heightCm, weightKg) {
+  const h = Number(heightCm)
+  const w = Number(weightKg)
+  if (!h || !w) return null
+  const bmi = w / Math.pow(h / 100, 2)
+  if (!Number.isFinite(bmi)) return null
+  let category = 'Normal'
+  if (bmi < 18.5) category = 'Underweight'
+  else if (bmi >= 25 && bmi < 30) category = 'Overweight'
+  else if (bmi >= 30) category = 'Obese'
+  return { bmi: Math.round(bmi * 10) / 10, category }
 }
 
 export function computeDerivedFields(values) {
@@ -176,16 +193,24 @@ export function classify(scores, overridesTriggered) {
   }
 }
 
-function phenotypeBlock(phenotypeId, region, dietType) {
+function bodyTypeModifier(bodyType) {
+  const modifiers = diet.body_type_modifiers
+  if (!modifiers || !bodyType) return null
+  return modifiers[bodyType] || null
+}
+
+function phenotypeBlock(phenotypeId, region, dietType, bodyType) {
   const general = diet.general_protocol[phenotypeId]
   const regional = diet.regional_suggestions[phenotypeId]
   const plan = diet.meal_plans[phenotypeId]
+  const modifier = bodyTypeModifier(bodyType)
   return {
     phenotype: phenotypeId,
     focus: general.focus,
-    diet_strategy: general.diet_strategy,
-    exercise: general.exercise,
+    diet_strategy: modifier ? [...general.diet_strategy, ...modifier.diet_strategy] : general.diet_strategy,
+    exercise: modifier ? [...general.exercise, ...modifier.exercise] : general.exercise,
     priorities: general.priorities,
+    body_type: bodyType || null,
     regional_suggestions: {
       region,
       primary_focus: regional.primary_focus,
@@ -199,10 +224,10 @@ function phenotypeBlock(phenotypeId, region, dietType) {
   }
 }
 
-export function buildRecommendation(classification, scores, region, dietType) {
+export function buildRecommendation(classification, scores, region, dietType, bodyType) {
   const involved = classification.phenotypes_involved
   const isMixed = classification.classification.startsWith('Mixed')
-  const blocks = involved.map((pid) => phenotypeBlock(pid, region, dietType))
+  const blocks = involved.map((pid) => phenotypeBlock(pid, region, dietType, bodyType))
   const mitoFlag = scores.mitochondrial?.flag
   return {
     is_mixed: isMixed,
@@ -212,7 +237,7 @@ export function buildRecommendation(classification, scores, region, dietType) {
       note: mitoFlag
         ? 'Mitochondrial/hypoxia screen (Section 2, Table 5) flagged 2+ positive findings — treat this as a co-primary support track alongside the phenotype protocol above.'
         : 'General foundational support; add if energy, fatigue, or hypoxia symptoms are prominent.',
-      ...phenotypeBlock('mitochondrial', region, dietType),
+      ...phenotypeBlock('mitochondrial', region, dietType, bodyType),
     },
   }
 }
@@ -260,7 +285,7 @@ export function runPipeline(answers, region, dietType) {
 
   const overridesTriggered = evaluateOverrides(values)
   const classification = classify(scores, overridesTriggered)
-  const recommendation = buildRecommendation(classification, scores, region, dietType)
+  const recommendation = buildRecommendation(classification, scores, region, dietType, values.body_type)
   return { scores, classification, recommendation, computed_values: values }
 }
 
