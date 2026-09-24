@@ -129,8 +129,15 @@ export default function Results() {
           </div>
         )}
 
+        {!isExcluded && (
+          <div className="mt-14">
+            <SkippedTestsGuide />
+          </div>
+        )}
+
         <div className="mt-14 flex flex-wrap items-center justify-center gap-4 print:hidden">
           <Link to="/assessment" className="btn-ghost">Retake Assessment</Link>
+          <Link to="/journey" className="btn-ghost">Log This in My Journey</Link>
           <button onClick={() => window.print()} className="btn-primary">
             Save / Print Report
           </button>
@@ -310,6 +317,65 @@ function InfoIcon() {
     <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
       <circle cx="12" cy="12" r="10" /><path d="M12 16v-4M12 8h.01" strokeLinecap="round" />
     </svg>
+  )
+}
+
+// "Tests doctors often skip" (insights-doc gap): general educational
+// reference, not a diagnosis or a personalised recommendation -- static
+// content, same "no black box" spirit as the rest of this app.
+const OFTEN_SKIPPED_TESTS = [
+  {
+    name: 'Fasting Insulin / HOMA-IR',
+    why: 'Routine panels often check glucose alone, which can look normal for years while insulin resistance is already building.',
+  },
+  {
+    name: 'Free Testosterone & SHBG',
+    why: 'Total testosterone alone can miss hyperandrogenism — free testosterone and SHBG give a clearer picture.',
+  },
+  {
+    name: 'DHEA-S',
+    why: 'Flags adrenal-origin androgen excess, which needs a different work-up than ovarian-origin PCOS.',
+  },
+  {
+    name: 'Thyroid Panel (TSH ± free T4)',
+    why: 'Hypothyroidism can mimic or worsen PCOS-like symptoms and is a standard differential that sometimes gets skipped.',
+  },
+  {
+    name: '17-Hydroxyprogesterone',
+    why: 'Rules out non-classic congenital adrenal hyperplasia, a condition that can look like PCOS on the surface.',
+  },
+  {
+    name: 'Prolactin',
+    why: 'Elevated prolactin can cause irregular cycles on its own and is a standard PCOS differential.',
+  },
+  {
+    name: 'Vitamin D',
+    why: 'Frequently low in PCOS and linked to insulin resistance, but rarely tested unless specifically requested.',
+  },
+  {
+    name: 'AMH (Anti-Müllerian Hormone)',
+    why: "Reflects ovarian reserve and polycystic morphology — sometimes used alongside or instead of ultrasound.",
+  },
+]
+
+function SkippedTestsGuide() {
+  return (
+    <GlassCard className="p-6 sm:p-8">
+      <h3 className="font-display text-lg font-semibold text-white">Tests worth asking your doctor about</h3>
+      <p className="mt-2 text-sm text-slate-400">
+        These are commonly relevant to PCOS work-ups but don't always make it onto a standard panel.
+        This is general educational information, not a diagnosis or a substitute for medical advice —
+        bring this list to your doctor and let them decide what's appropriate for you.
+      </p>
+      <dl className="mt-5 grid gap-4 sm:grid-cols-2">
+        {OFTEN_SKIPPED_TESTS.map((t) => (
+          <div key={t.name} className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+            <dt className="font-display text-sm font-semibold text-bio-300">{t.name}</dt>
+            <dd className="mt-1.5 text-xs text-slate-400">{t.why}</dd>
+          </div>
+        ))}
+      </dl>
+    </GlassCard>
   )
 }
 
