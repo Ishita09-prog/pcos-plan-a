@@ -1,15 +1,22 @@
 // Local-only lab report auto-fill (mentor feedback: "uploading data via
 // patient reports ... for every field it should calculate if that value is
-// correct or over-riding"). Everything here runs in the browser with
-// pdf.js -- no report text, image, or extracted value is ever sent to any
-// server, external API, or AI model. Only text-based PDFs are supported for
-// now (most digitally-generated lab reports); scanned/photographed reports
-// need OCR, which is out of scope for this pass.
+// correct or over-riding"). Everything here runs in the browser -- no report
+// text, image, or extracted value is ever sent to any server, external API,
+// or AI model. Text-based PDFs are parsed with pdf.js; JPG/JPEG (and PNG)
+// photos/scans are parsed with a locally-bundled Tesseract.js OCR worker --
+// both the worker script and the English language model ship as static
+// files in this app (see vite.config for the worker path and
+// public/tessdata for the model), so no OCR request ever leaves the device.
 import * as pdfjsLib from 'pdfjs-dist'
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
+import { createWorker, OEM } from 'tesseract.js'
+import tesseractWorkerPath from 'tesseract.js/dist/worker.min.js?url'
+import tesseractCorePath from 'tesseract.js-core/tesseract-core-lstm.wasm.js?url'
 import { questionnaire, evaluateRule } from './ruleEngine.js'
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker
+
+const IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png']
 
 // Each entry: the questionnaire field key to fill, and one or more regexes
 // that match "<lab name> ... <number>" in the extracted report text. Kept
@@ -47,6 +54,27 @@ export async function extractTextFromPdf(file) {
     text += content.items.map((it) => it.str).join(' ') + '\n'
   }
   return text
+}
+
+// Runs entirely on-device: workerPath/corePath point at files bundled into
+// this app's own build (no jsdelivr/unpkg CDN, which tesseract.js otherwise
+// defaults to), and langPath points at the .traineddata model shipped in
+// public/tessdata -- so nothing is ever fetched from, or sent to, an
+// outside server while reading someone's photographed lab report.
+export async function extractTextFromImage(file) {
+  const worker = await createWorker('eng', OEM.LSTM_ONLY, {
+    workerPath: tesseractWorkerPath,
+    corePath: tesseractCorePath,
+    langPath: '/tessdata',
+    gzip: true,
+    logger: () => {},
+  })
+  try {
+    const { data } = await worker.recognize(file)
+    return data.text
+  } finally {
+    await worker.terminate()
+  }
 }
 
 export function parseLabValues(text) {
@@ -105,14 +133,21 @@ export function flagExtractedValues(extracted) {
   return flagged
 }
 
-// End-to-end: PDF File -> { fieldKey: { value, flag } }. Throws if the PDF
-// has no extractable text (e.g. a scanned image) so the caller can tell the
-// user this report needs manual entry instead of silently returning nothing.
+// End-to-end: report File -> { fieldKey: { value, flag } }. Accepts a
+// text-based PDF (parsed with pdf.js) or a JPG/JPEG/PNG photo or scan
+// (parsed with a fully local Tesseract.js OCR pass). Throws a friendly
+// error if nothing recognisable was found so the caller can tell the user
+// to enter values manually instead of silently returning nothing.
 export async function extractReportData(file) {
-  const text = await extractTextFromPdf(file)
+  const isImage = IMAGE_TYPES.includes(file.type) || /\.(jpe?g|png)$/i.test(file.name || '')
+  const text = isImage ? await extractTextFromImage(file) : await extractTextFromPdf(file)
   const values = parseLabValues(text)
   if (Object.keys(values).length === 0) {
-    throw new Error('No recognisable lab values found in this PDF. It may be a scanned image rather than a text PDF -- please enter values manually.')
+    throw new Error(
+      isImage
+        ? 'No recognisable lab values found in this image. Try a clearer, well-lit photo, or enter values manually.'
+        : 'No recognisable lab values found in this PDF. It may be a scanned image rather than a text PDF -- please enter values manually.'
+    )
   }
   return flagExtractedValues(values)
 }
