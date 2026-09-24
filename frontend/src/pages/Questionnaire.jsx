@@ -1,12 +1,17 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { useMemo, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import GlassCard from '../components/GlassCard.jsx'
 import ProgressRail from '../components/ProgressRail.jsx'
 import QuestionCard from '../components/QuestionCard.jsx'
 import { submitAssessment } from '../lib/api.js'
-import { questionnaire } from '../lib/ruleEngine.js'
+import { questionnaire, liveBmi } from '../lib/ruleEngine.js'
 
+// Order per mentor feedback (Sep 2026): Metabolic -> Hormonal -> Adrenal ->
+// Inflammatory, with the Rotterdam first-line gate ahead of everything and
+// the mitochondrial "Energy Screen" kept reachable right after the four
+// phenotypes (it was dropped from the flow in an earlier pass -- restored
+// here since its questions still feed the mitochondrial-support recommendation).
 const PHENOTYPE_KEYS = ['metabolic', 'hormonal', 'adrenal', 'inflammatory']
 const PHENOTYPE_STEPS = PHENOTYPE_KEYS.map((id) => ({
   key: id,
@@ -18,10 +23,24 @@ const PHENOTYPE_STEPS = PHENOTYPE_KEYS.map((id) => ({
 const STEPS = [
   { key: 'first_line', label: 'First-Line Testing', fullLabel: questionnaire.first_line?.label || 'First-Line Testing', questions: questionnaire.first_line?.questions || [] },
   ...PHENOTYPE_STEPS,
+  { key: 'mitochondrial', label: 'Energy Screen', fullLabel: questionnaire.mitochondrial_axis?.label || 'Energy Screen', questions: questionnaire.mitochondrial_axis?.questions || [] },
   { key: 'exclusions', label: 'Exclusions', fullLabel: questionnaire.exclusions?.label || 'Exclusions', questions: questionnaire.exclusions?.questions || [] },
   { key: 'goals', label: 'Your Goals' },
   { key: 'review', label: 'Review' },
 ]
+
+// For a field shared by two questions in two different steps (e.g. sym_acne
+// in Hormonal+Inflammatory, sleep_apnea/hypoxia in Metabolic+Energy Screen),
+// only the step where it's asked FIRST in the flow should collect it -- every
+// later step just shows it as already answered.
+const PRIMARY_STEP_FOR_SHARED_FIELD = {}
+for (const step of STEPS) {
+  for (const q of step.questions || []) {
+    if (q.shared_field && !(q.shared_field in PRIMARY_STEP_FOR_SHARED_FIELD)) {
+      PRIMARY_STEP_FOR_SHARED_FIELD[q.shared_field] = step.key
+    }
+  }
+}
 
 export default function Questionnaire() {
   const [stepIndex, setStepIndex] = useState(0)
@@ -31,14 +50,24 @@ export default function Questionnaire() {
   const [error, setError] = useState(null)
   const navigate = useNavigate()
 
+  const [extractedFlags, setExtractedFlags] = useState({})
+
   useEffect(() => {
-    // Simulate auto-filling from uploaded reports
-    const mockData = sessionStorage.getItem('mock_extracted_data')
-    if (mockData) {
+    // Auto-fill from a lab report parsed locally on the Registration page
+    // (see lib/reportExtractor.js) -- each value also carries a normal /
+    // overriding flag computed against this same questionnaire's thresholds.
+    const extracted = sessionStorage.getItem('pcos_extracted_report')
+    if (extracted) {
       try {
-        setAnswers(prev => ({ ...prev, ...JSON.parse(mockData) }))
+        const flagged = JSON.parse(extracted)
+        setAnswers((prev) => {
+          const next = { ...prev }
+          for (const [key, { value }] of Object.entries(flagged)) next[key] = value
+          return next
+        })
+        setExtractedFlags(flagged)
       } catch (e) {
-        // Ignore parse error
+        // Ignore parse error -- user can still fill the form by hand
       }
     }
   }, [])
@@ -55,11 +84,14 @@ export default function Questionnaire() {
     setSubmitting(true)
     setError(null)
     try {
-      // In a real flow, you'd pull demographics from context/store saved during Registration
+      const registration = JSON.parse(sessionStorage.getItem('pcos_registration') || '{}')
+      const { region_preference, diet_type, ...demographics } = registration
       const payload = {
-        demographics: {}, 
+        demographics,
         answers,
         primary_goals: goals,
+        region_preference: region_preference || 'South Indian',
+        diet_type: diet_type || 'Vegetarian',
       }
       const result = await submitAssessment(payload)
       sessionStorage.setItem('pcos_last_result', JSON.stringify(result))
@@ -81,22 +113,42 @@ export default function Questionnaire() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  // Presentation/demo helper -- fills a plausible Metabolic-primary case that
+  // clears the Rotterdam gate, so a live demo lands on a real classification
+  // instead of "Inconclusive -- Does not meet Rotterdam Criteria". Not wired
+  // to any backend; purely local, same as before.
   function fillDemoData() {
+    if (!sessionStorage.getItem('pcos_registration')) {
+      sessionStorage.setItem('pcos_registration', JSON.stringify({
+        fullName: 'Ananya Sharma',
+        email: 'ananya.demo@example.com',
+        dob: '2003-05-14',
+        age: '22',
+        occupation: 'Student',
+        relationship_status: 'Single, no pregnancy goals yet',
+        ethnicity: 'South Indian',
+        living_environment: 'Urban - Polluted',
+        pcos_diagnosis_age: '20',
+        region_preference: 'South Indian',
+        diet_type: 'Vegetarian',
+      }))
+    }
     setAnswers({
+      // First-line / Rotterdam -- 2 of 3 met
       irregular_cycle: 'yes',
-      high_testosterone_symptoms: 'yes',
       polycystic_ovaries_usg: 'yes',
-      stress_psq: 8,
-      anxiety_phq2: 2,
-      anxiety_phq2_2: 3,
-      triglycerides: 180,
-      hdl: 40,
-      height_cm: 160,
-      weight_kg: 80,
-      fatigue: 'yes',
-      sleep_apnea: 'yes',
-      hypoxia: 'yes',
-      body_type: 'Obese'
+      exclusion_other_disorders: 'no',
+      // Metabolic -- tally leader, no conflicting override
+      height_cm: 160, weight_kg: 80, waist_cm: 92, hip_cm: 104,
+      acanthosis_nigricans: 'yes', skin_tags: 'yes', postprandial_slump: 'yes',
+      triglycerides: 180, hdl: 40,
+      fasting_glucose: 98, fasting_insulin: 7, hba1c: 5.6, homa_ir: 1.8,
+      sedentary: 'yes', ultraprocessed_food: 'yes',
+      sleep_apnea: 'no', hypoxia: 'no',
+      body_type: 'Obese',
+      // Energy screen
+      mito_fatigue: 'yes', mito_pem: 'no', mito_detraining: 'no',
+      // Everything else left blank/normal on purpose
     })
     setGoals(['Balance mood & lower stress levels', 'Improve sleep quality', 'Overcome chronic fatigue & brain fog'])
     setStepIndex(STEPS.length - 1)
@@ -136,7 +188,7 @@ export default function Questionnaire() {
             )}
 
             {step.questions && (
-              <PhenotypeStep step={step} answers={answers} onChange={handleAnswerChange} />
+              <PhenotypeStep step={step} answers={answers} onChange={handleAnswerChange} extractedFlags={extractedFlags} />
             )}
           </motion.div>
         </AnimatePresence>
@@ -181,17 +233,29 @@ function SectionIntro({ title, desc }) {
   )
 }
 
-function PhenotypeStep({ step, answers, onChange }) {
+function PhenotypeStep({ step, answers, onChange, extractedFlags = {} }) {
+  const bmi = step.key === 'metabolic' ? liveBmi(answers.height_cm, answers.weight_kg) : null
   return (
     <>
       <SectionIntro
         title={step.fullLabel}
         desc="Fill in the relevant details below."
       />
+      {bmi && (
+        <GlassCard className="flex items-center justify-between px-5 py-3">
+          <span className="text-sm text-slate-400">Your BMI (live, as you type)</span>
+          <span className="font-display text-lg font-semibold text-bio-200">
+            {bmi.bmi} <span className="text-sm font-normal text-slate-400">· {bmi.category}</span>
+          </span>
+        </GlassCard>
+      )}
       {step.questions.map((q, i) => {
         const carriedOver = Boolean(
-          q.shared_field && answers[q.shared_field] !== undefined && step.key !== 'hormonal'
+          q.shared_field &&
+          answers[q.shared_field] !== undefined &&
+          step.key !== PRIMARY_STEP_FOR_SHARED_FIELD[q.shared_field]
         )
+        const reportFlag = q.fields?.map((f) => extractedFlags[f.key]).find(Boolean)
         return (
           <QuestionCard
             key={q.id}
@@ -200,6 +264,7 @@ function PhenotypeStep({ step, answers, onChange }) {
             answers={answers}
             onChange={onChange}
             carriedOver={carriedOver}
+            reportFlag={reportFlag}
           />
         )
       })}

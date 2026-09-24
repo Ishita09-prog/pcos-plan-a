@@ -122,7 +122,18 @@ const CATEGORY_STYLE = {
   'Root Cause Analysis': 'text-amber-300 border-amber-300/30 bg-amber-400/10',
 }
 
-export default function QuestionCard({ question, index, answers, onChange, carriedOver }) {
+const FLAG_STYLE = {
+  normal: 'text-bio-300 border-bio-300/30 bg-bio-400/10',
+  overriding: 'text-alert-400 border-alert-500/30 bg-alert-500/10',
+  unknown: 'text-slate-400 border-white/10 bg-white/5',
+}
+const FLAG_LABEL = {
+  normal: 'From your report · within reference range',
+  overriding: 'From your report · outside reference range',
+  unknown: 'From your report',
+}
+
+export default function QuestionCard({ question, index, answers, onChange, carriedOver, reportFlag }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 14 }}
@@ -149,6 +160,12 @@ export default function QuestionCard({ question, index, answers, onChange, carri
         {question.description && (
           <div className="mb-4 text-xs text-slate-400 bg-white/5 p-2 rounded-lg">
             {question.description}
+          </div>
+        )}
+
+        {reportFlag && (
+          <div className={`mb-4 inline-flex rounded-full border px-2.5 py-0.5 text-[11px] font-medium ${FLAG_STYLE[reportFlag.flag] || FLAG_STYLE.unknown}`}>
+            {FLAG_LABEL[reportFlag.flag] || FLAG_LABEL.unknown}
           </div>
         )}
 

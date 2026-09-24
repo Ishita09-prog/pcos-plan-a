@@ -4,7 +4,6 @@ import { Link, useParams } from 'react-router-dom'
 import GlassCard from '../components/GlassCard.jsx'
 import PhenotypeRadar from '../components/PhenotypeRadar.jsx'
 import SeverityRing from '../components/SeverityRing.jsx'
-import AIPlanChatbot from '../components/AIPlanChatbot.jsx'
 import { fetchResult } from '../lib/api.js'
 
 const PHENOTYPE_META = {
@@ -39,11 +38,15 @@ export default function Results() {
   const { scores, classification, recommendation } = result
   const isMixed = classification.classification.startsWith('Mixed')
   const isInconclusive = classification.classification.startsWith('Inconclusive')
+  const isExcluded = classification.classification === 'Excluded'
+  // Rotterdam-gated-out and Excluded results never got a phenotype tally, so
+  // there's no diet/exercise protocol (or mitochondrial block) to show.
+  const hasNoRecommendation = isInconclusive || isExcluded
 
   return (
     <div className="relative">
       <div className="relative mx-auto max-w-6xl px-6 py-14">
-        <ClassificationBanner classification={classification} isMixed={isMixed} isInconclusive={isInconclusive} source={result.source} />
+        <ClassificationBanner classification={classification} isMixed={isMixed} isInconclusive={isInconclusive} isExcluded={isExcluded} source={result.source} />
 
         {/* Radar + severity rings */}
         <div className="mt-8 grid gap-6 lg:grid-cols-[320px_1fr]">
@@ -110,7 +113,7 @@ export default function Results() {
         )}
 
         {/* Recommendation blocks */}
-        {!isInconclusive && (
+        {!hasNoRecommendation && (
           <div className="mt-14 space-y-10">
             <SectionHeading
               eyebrow="Section 4 · Targeted Protocol"
@@ -120,19 +123,9 @@ export default function Results() {
             {recommendation.phenotype_blocks.map((block) => (
               <PhenotypeProtocolBlock key={block.phenotype} block={block} />
             ))}
-            <MitochondrialBlock block={recommendation.mitochondrial_support} />
-          </div>
-        )}
-
-        {/* AI Chatbot */}
-        {!isInconclusive && (
-          <div className="mt-14">
-            <SectionHeading
-              eyebrow="AI Assistant"
-              title="Personalized Lifestyle Chatbot"
-              desc="Chat with our AI assistant to tailor your diet and exercise plan further. Note: This assistant does not provide medical advice on symptoms."
-            />
-            <AIPlanChatbot />
+            {recommendation.mitochondrial_support && (
+              <MitochondrialBlock block={recommendation.mitochondrial_support} />
+            )}
           </div>
         )}
 
@@ -147,7 +140,7 @@ export default function Results() {
   )
 }
 
-function ClassificationBanner({ classification, isMixed, isInconclusive, source }) {
+function ClassificationBanner({ classification, isMixed, isInconclusive, isExcluded, source }) {
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
       <GlassCard strong className="relative overflow-hidden p-8 sm:p-10">
@@ -159,8 +152,12 @@ function ClassificationBanner({ classification, isMixed, isInconclusive, source 
               Automatically Scored From Your Responses
             </span>
             <h1 className="mt-4 font-display text-3xl font-bold text-white sm:text-4xl">
-              {isInconclusive ? (
-                'Inconclusive — Minimal Findings'
+              {isExcluded ? (
+                'Excluded — See a Doctor First'
+              ) : isInconclusive ? (
+                classification.classification === 'Inconclusive — Does not meet Rotterdam Criteria'
+                  ? 'Does Not Meet Rotterdam Criteria'
+                  : 'Inconclusive — Minimal Findings'
               ) : isMixed ? (
                 <>
                   Mixed Phenotype:{' '}
@@ -168,10 +165,12 @@ function ClassificationBanner({ classification, isMixed, isInconclusive, source 
                     {classification.phenotypes_involved.map((p) => PHENOTYPE_META[p].label).join(' + ')}
                   </span>
                 </>
-              ) : (
+              ) : classification.primary_phenotype && PHENOTYPE_META[classification.primary_phenotype] ? (
                 <>
                   Primary Phenotype: <span className="text-gradient-bio">{PHENOTYPE_META[classification.primary_phenotype].label}</span>
                 </>
+              ) : (
+                classification.classification
               )}
             </h1>
             <p className="mt-3 max-w-2xl text-sm text-slate-400">{classification.reason}</p>
