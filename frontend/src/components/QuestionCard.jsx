@@ -71,12 +71,20 @@ function SelectInput({ field, value, onChange }) {
 }
 
 function ScaleInput({ field, value, onChange }) {
-  const v = value === '' || value === undefined ? field.min : Number(value)
+  const hasValue = value !== '' && value !== undefined
+  const v = hasValue ? Number(value) : field.min
+  // Plain-language meaning of the current value (mentor feedback: any scale
+  // used needs a plain-language definition shown to the user -- "what does
+  // a 7 mean?"), e.g. PSS-10's Never/Sometimes/Very Often anchors.
+  const liveLabel = field.labels?.[v]
   return (
     <div>
       <div className="field-label flex items-center justify-between">
         <span>{field.label}</span>
-        <span className="font-mono text-bio-300">{value === '' || value === undefined ? '—' : v}</span>
+        <span className="font-mono text-bio-300">
+          {hasValue ? v : '—'}
+          {hasValue && liveLabel && <span className="ml-1.5 font-sans text-slate-400">({liveLabel})</span>}
+        </span>
       </div>
       <input
         type="range"
@@ -87,8 +95,8 @@ function ScaleInput({ field, value, onChange }) {
         className="w-full accent-bio-400"
       />
       <div className="mt-1 flex justify-between text-xs text-slate-500">
-        <span>{field.min}</span>
-        <span>{field.max}</span>
+        <span>{field.labels ? field.labels[field.min] : field.min}</span>
+        <span>{field.labels ? field.labels[field.max] : field.max}</span>
       </div>
     </div>
   )

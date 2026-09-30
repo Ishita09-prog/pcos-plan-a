@@ -40,6 +40,17 @@ const FORMULAS = {
   bmi: (v) => v.weight_kg / Math.pow(v.height_cm / 100, 2),
   whr: (v) => v.waist_cm / v.hip_cm,
   tg_hdl_ratio: (v) => v.triglycerides / v.hdl,
+  // Perceived Stress Scale (PSS-10): sum all 10 items, with items 4, 5, 7
+  // and 8 reverse-scored (4 - response) -- standard Cohen et al. 1983
+  // scoring. Must match the `computed.pss_total` expression string in
+  // questionnaire.json exactly (the Python backend interprets that string
+  // directly; this JS engine hardcodes the same formula instead).
+  pss_total: (v) => (
+    v.pss_1 + v.pss_2 + v.pss_3 + (4 - v.pss_4) + (4 - v.pss_5)
+    + v.pss_6 + (4 - v.pss_7) + (4 - v.pss_8) + v.pss_9 + v.pss_10
+  ),
+  // PHQ-2: simple sum of both items (0-3 each), standard Kroenke et al. 2003.
+  phq2_total: (v) => v.phq2_1 + v.phq2_2,
 }
 
 // Live BMI helper for the Metabolic page (mentor feedback: show BMI as soon

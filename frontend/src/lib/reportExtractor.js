@@ -42,6 +42,10 @@ const FIELD_PATTERNS = [
   { key: 'homa_ir', patterns: [/homa[-\s]?ir[^0-9]{0,20}(\d+(?:\.\d+)?)/i] },
   { key: 'height_cm', patterns: [/height[^0-9]{0,20}(\d+(?:\.\d+)?)\s*cm/i] },
   { key: 'weight_kg', patterns: [/weight[^0-9]{0,20}(\d+(?:\.\d+)?)\s*kg/i] },
+  // Ultrasound/USG report fields (Rotterdam-criteria ovarian findings) --
+  // same local-only extraction path as the blood-panel fields above.
+  { key: 'follicle_count', patterns: [/(?:antral\s+)?follicle\s*count[^0-9]{0,20}(\d+(?:\.\d+)?)/i, /\bafc\b[^0-9]{0,15}(\d+(?:\.\d+)?)/i] },
+  { key: 'ovarian_volume_ml', patterns: [/ovar(?:y|ian)\s*volume[^0-9]{0,25}(\d+(?:\.\d+)?)\s*(?:ml|cc|cm3|cm.?3)?/i] },
 ]
 
 export async function extractTextFromPdf(file) {
