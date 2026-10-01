@@ -113,59 +113,161 @@ export default function Questionnaire() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  // Presentation/demo helper -- fills a plausible Metabolic-primary case that
-  // clears the Rotterdam gate, so a live demo lands on a real classification
-  // instead of "Inconclusive -- Does not meet Rotterdam Criteria". Not wired
-  // to any backend; purely local, same as before.
-  function fillDemoData() {
-    if (!sessionStorage.getItem('pcos_registration')) {
-      sessionStorage.setItem('pcos_registration', JSON.stringify({
-        fullName: 'Ananya Sharma',
-        email: 'ananya.demo@example.com',
-        dob: '2003-05-14',
-        age: '22',
-        occupation: 'Student',
-        relationship_status: 'Single, no pregnancy goals yet',
-        ethnicity: 'South Indian',
-        living_environment: 'Urban - Polluted',
-        pcos_diagnosis_age: '20',
-        region_preference: 'South Indian',
-        diet_type: 'Vegetarian',
-      }))
-    }
-    setAnswers({
-      // First-line / Rotterdam -- 2 of 3 met
+  // Presentation/demo helper -- two complete, every-field-filled profiles for
+  // walking a reviewer through the live questionnaire page by page (not just
+  // jumping to a result). PCOS_CASE clearly meets the Rotterdam gate and
+  // tallies Metabolic as a clean primary phenotype (no override triggered,
+  // for a simple story); HEALTHY_CASE deliberately fails the Rotterdam gate
+  // and has normal values on every single field, demonstrating the tool
+  // correctly recognizing a true negative. Neither is wired to the backend --
+  // purely local state, same as the original single demo button.
+  const PCOS_CASE = {
+    registration: {
+      fullName: 'Ananya Sharma',
+      email: 'ananya.demo@example.com',
+      dob: '2003-05-14',
+      age: '22',
+      occupation: 'Student',
+      relationship_status: 'Single, no pregnancy goals yet',
+      ethnicity: 'South Indian',
+      living_environment: 'Urban - Polluted',
+      pcos_diagnosis_age: '20',
+      region_preference: 'South Indian',
+      diet_type: 'Vegetarian',
+    },
+    goals: ['Get my periods more regular', 'Help my body respond better to insulin', 'Overcome constant tiredness & brain fog'],
+    answers: {
+      // First-line / Rotterdam -- 3 of 3 met
       irregular_cycle: 'yes',
+      high_testosterone_symptoms: 'yes',
       polycystic_ovaries_usg: 'yes',
       exclusion_other_disorders: 'no',
-      // Metabolic -- tally leader, no conflicting override
-      height_cm: 160, weight_kg: 80, waist_cm: 92, hip_cm: 104,
+      // Metabolic -- clean tally leader, below both override thresholds
+      height_cm: 160, weight_kg: 82, waist_cm: 94, hip_cm: 102,
+      triglycerides: 180, hdl: 38,
       acanthosis_nigricans: 'yes', skin_tags: 'yes', postprandial_slump: 'yes',
-      triglycerides: 180, hdl: 40,
-      fasting_glucose: 98, fasting_insulin: 7, hba1c: 5.6, homa_ir: 1.8,
+      fasting_glucose: 99, fasting_insulin: 8, hba1c: 5.6, homa_ir: 1.9,
       sedentary: 'yes', ultraprocessed_food: 'yes',
       sleep_apnea: 'no', hypoxia: 'no',
       body_type: 'Obese',
-      // Energy screen
-      mito_fatigue: 'yes', mito_pem: 'no', mito_detraining: 'no',
-      // Everything else left blank/normal on purpose
-    })
-    setGoals(['Balance mood & lower stress levels', 'Improve sleep quality', 'Overcome chronic fatigue & brain fog'])
-    setStepIndex(STEPS.length - 1)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+      // Hormonal -- some findings, below Metabolic's tally
+      cycle_length_days: 45, cycle_absent: 'no',
+      hirsutism_severity: 'Mild', alopecia: 'no', sym_acne: 'yes',
+      follicle_count: 24, ovarian_volume_ml: 8,
+      total_testosterone: 65, free_testosterone: 0.5,
+      lh_fsh_ratio: 1.5, shbg: 70, post_pill_amenorrhea: 'no',
+      // Adrenal -- mild findings, no override
+      systolic: 118, diastolic: 76, heart_rate: 88, spo2: 97,
+      dhea_s: 200, cortisol_am: 15,
+      pss_1: 2, pss_2: 2, pss_3: 2, pss_4: 2, pss_5: 2, pss_6: 2, pss_7: 2, pss_8: 2, pss_9: 2, pss_10: 2,
+      phq2_1: 1, phq2_2: 1,
+      sleep_hours: 6.5, sleep_poor_quality: 'yes',
+      adrenal_fatigue: 'yes', worried: 'yes', poor_concentration: 'no', shallow_breathing: 'no', mood_swings: 'no',
+      // Inflammatory -- some findings, no override
+      joint_pain: 'no', hs_crp: 0.8,
+      tsh: 2.5, tpo_ab_positive: 'no',
+      vitamin_d3: 35, serum_zinc: 95,
+      edc_exposure: 'Moderate', heavy_metal_exposure: 'no',
+      gut_health_issue: 'yes', gut_dysbiosis_severe: 'no',
+      autoimmune_history: 'no',
+      low_sun_exposure: 'yes', vitd_deficiency_symptoms: 'no',
+      // Energy Screen -- flag triggers (2+ positive)
+      mito_fatigue: 'yes', mito_pem: 'no', mito_detraining: 'yes',
+    },
+  }
+
+  const HEALTHY_CASE = {
+    registration: {
+      fullName: 'Priya Reddy',
+      email: 'priya.demo@example.com',
+      dob: '2002-11-02',
+      age: '23',
+      occupation: 'Student',
+      relationship_status: 'Single, no pregnancy goals yet',
+      ethnicity: 'South Indian',
+      living_environment: 'Urban - Not polluted',
+      pcos_diagnosis_age: '',
+      region_preference: 'South Indian',
+      diet_type: 'Vegetarian',
+    },
+    goals: ['Sleep better', 'Have more energy & stamina'],
+    answers: {
+      // First-line / Rotterdam -- 0 of 3 met -> correctly gated out as "not PCOS"
+      irregular_cycle: 'no',
+      high_testosterone_symptoms: 'no',
+      polycystic_ovaries_usg: 'no',
+      exclusion_other_disorders: 'no',
+      // Metabolic -- all normal
+      height_cm: 162, weight_kg: 58, waist_cm: 70, hip_cm: 92,
+      triglycerides: 90, hdl: 65,
+      acanthosis_nigricans: 'no', skin_tags: 'no', postprandial_slump: 'no',
+      fasting_glucose: 85, fasting_insulin: 4, hba1c: 5.0, homa_ir: 0.9,
+      sedentary: 'no', ultraprocessed_food: 'no',
+      sleep_apnea: 'no', hypoxia: 'no',
+      body_type: 'Lean',
+      // Hormonal -- all normal
+      cycle_length_days: 28, cycle_absent: 'no',
+      hirsutism_severity: 'None', alopecia: 'no', sym_acne: 'no',
+      follicle_count: 8, ovarian_volume_ml: 6,
+      total_testosterone: 30, free_testosterone: 0.4,
+      lh_fsh_ratio: 1.0, shbg: 60, post_pill_amenorrhea: 'no',
+      // Adrenal -- all normal, low stress
+      systolic: 112, diastolic: 72, heart_rate: 70, spo2: 99,
+      dhea_s: 180, cortisol_am: 14,
+      pss_1: 0, pss_2: 0, pss_3: 0, pss_4: 4, pss_5: 4, pss_6: 0, pss_7: 4, pss_8: 4, pss_9: 0, pss_10: 0,
+      phq2_1: 0, phq2_2: 0,
+      sleep_hours: 8, sleep_poor_quality: 'no',
+      adrenal_fatigue: 'no', worried: 'no', poor_concentration: 'no', shallow_breathing: 'no', mood_swings: 'no',
+      // Inflammatory -- all normal
+      joint_pain: 'no', hs_crp: 0.5,
+      tsh: 2.0, tpo_ab_positive: 'no',
+      vitamin_d3: 45, serum_zinc: 80,
+      edc_exposure: 'Low', heavy_metal_exposure: 'no',
+      gut_health_issue: 'no', gut_dysbiosis_severe: 'no',
+      autoimmune_history: 'no',
+      low_sun_exposure: 'no', vitd_deficiency_symptoms: 'no',
+      // Energy Screen -- no flag
+      mito_fatigue: 'no', mito_pem: 'no', mito_detraining: 'no',
+    },
+  }
+
+  const [demoProfile, setDemoProfile] = useState(null)
+
+  function loadDemo(profileKey) {
+    const profile = profileKey === 'pcos' ? PCOS_CASE : HEALTHY_CASE
+    sessionStorage.setItem('pcos_registration', JSON.stringify(profile.registration))
+    setAnswers(profile.answers)
+    setGoals(profile.goals)
+    setDemoProfile(profileKey)
+    // Deliberately NOT changing stepIndex -- stays on whatever step you're
+    // currently viewing so the form in front of you fills in immediately,
+    // and every step you walk to next (Back/Continue) is already filled too.
   }
 
   return (
     <div className="relative">
       <div className="relative mx-auto max-w-4xl px-6 py-14 pt-24">
-        <div className="mb-4 flex justify-end">
+        <div className="mb-4 flex flex-wrap items-center justify-end gap-2">
+          {demoProfile && (
+            <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-slate-400">
+              Demo loaded: <span className="text-bio-200">{demoProfile === 'pcos' ? 'PCOS case' : 'Healthy / no-PCOS case'}</span>
+            </span>
+          )}
           <button
             type="button"
-            onClick={fillDemoData}
+            onClick={() => loadDemo('pcos')}
             className="btn-ghost !px-4 !py-2 text-xs text-slate-400 hover:text-bio-200"
-            title="Fills the whole form with sample data"
+            title="Fills every step with a sample PCOS-positive case (clears Rotterdam criteria, Metabolic-primary)"
           >
-            ⚡ Fill Demo Data
+            ⚡ Fill PCOS Case
+          </button>
+          <button
+            type="button"
+            onClick={() => loadDemo('healthy')}
+            className="btn-ghost !px-4 !py-2 text-xs text-slate-400 hover:text-bio-200"
+            title="Fills every step with a sample healthy case (normal values throughout, does not meet Rotterdam criteria)"
+          >
+            ⚡ Fill Healthy Case
           </button>
         </div>
         <ProgressRail steps={STEPS} currentIndex={stepIndex} />
