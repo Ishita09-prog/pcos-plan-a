@@ -5,6 +5,7 @@ import GlassCard from '../components/GlassCard.jsx'
 import { questionnaire } from '../lib/ruleEngine.js'
 import { extractReportData } from '../lib/reportExtractor.js'
 import { registerPatient } from '../lib/api.js'
+import { PCOS_CASE, HEALTHY_CASE } from '../data/demoProfiles.js'
 
 // Everything except region/diet (rendered as their own labelled pickers
 // below) comes straight from questionnaire.json, so this page stays in sync
@@ -42,6 +43,24 @@ export default function Registration() {
   // Usability fix (insights doc): DOB isn't always known -- let the person
   // switch to typing their age directly instead of being blocked.
   const [dobUnknown, setDobUnknown] = useState(false)
+  // Presentation/demo helper -- same two profiles used throughout the
+  // questionnaire (see data/demoProfiles.js). Filling here fills this visible
+  // form immediately, and stashes the chosen profile so every later
+  // Questionnaire step is pre-filled too once "Continue to Assessment" (or
+  // the direct /assessment link) is used.
+  const [demoProfile, setDemoProfile] = useState(null)
+
+  function loadDemo(profileKey) {
+    const profile = profileKey === 'pcos' ? PCOS_CASE : HEALTHY_CASE
+    setDobUnknown(false)
+    setFormData(profile.registration)
+    sessionStorage.setItem('pcos_registration', JSON.stringify(profile.registration))
+    sessionStorage.setItem('pcos_demo_profile', profileKey)
+    sessionStorage.removeItem('pcos_extracted_report')
+    setUploadStatus(null)
+    setUploadError(null)
+    setDemoProfile(profileKey)
+  }
 
   // Calculate age from DOB whenever it's known.
   useEffect(() => {
@@ -132,6 +151,30 @@ export default function Registration() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
+        <div className="mb-4 flex flex-wrap items-center justify-end gap-2">
+          {demoProfile && (
+            <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-slate-400">
+              Demo loaded: <span className="text-bio-200">{demoProfile === 'pcos' ? 'PCOS case' : 'Healthy / no-PCOS case'}</span>
+            </span>
+          )}
+          <button
+            type="button"
+            onClick={() => loadDemo('pcos')}
+            className="btn-ghost !px-4 !py-2 text-xs text-slate-400 hover:text-bio-200"
+            title="Fills every step, starting here, with a sample PCOS-positive case (clears Rotterdam criteria, Metabolic-primary)"
+          >
+            ⚡ Fill PCOS Case
+          </button>
+          <button
+            type="button"
+            onClick={() => loadDemo('healthy')}
+            className="btn-ghost !px-4 !py-2 text-xs text-slate-400 hover:text-bio-200"
+            title="Fills every step, starting here, with a sample healthy case (normal values throughout, does not meet Rotterdam criteria)"
+          >
+            ⚡ Fill Healthy Case
+          </button>
+        </div>
+
         <div className="text-center mb-10">
           <span className="chip mx-auto mb-4">Step 1 · Registration</span>
           <h1 className="font-display text-3xl font-bold text-white sm:text-4xl">
